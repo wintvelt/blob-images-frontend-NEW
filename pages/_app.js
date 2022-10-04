@@ -26,14 +26,13 @@ export default function MyApp(props) {
     React.useEffect(() => {
         if (router.isReady && router.query.toast) {
             toast.info(router.query.toast)
-            router.replace(router.pathname)
         }
     }, [router.isReady, router.pathname])
 
     return (
         <CacheProvider value={emotionCache}>
             <Head>
-                <title>Clubalmanac</title>
+                <title>Clubalmanac {router.pathname}</title>
                 <meta name="viewport" content="initial-scale=1, width=device-width" />
             </Head>
             <ThemeProvider theme={theme}>
