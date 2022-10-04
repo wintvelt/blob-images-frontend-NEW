@@ -6,7 +6,7 @@ import ProTip from '../src/ProTip';
 import Link from '../src/Link';
 
 export default function Index() {
-    const boxStyle = { my: 4 }
+    const boxStyle = { my: 4 };
     return (
         <Container maxWidth="sm">
             <Box sx={boxStyle}>

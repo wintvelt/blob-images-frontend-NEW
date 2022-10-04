@@ -12,7 +12,9 @@ export function UserProvider({ children }) {
     const [user, setUser] = useState(initialUser);
     const router = useRouter();
     const redirectUnAuth = (pathname = '/') => {
-        if (!user.isAuthenticated) router.push(pathname)
+        if (!user.isAuthenticated) {
+            router.push(`${pathname}?toast=${encodeURI("Log in om ledenpagina's te bezoeken")}`)
+        }
     }
     // memoize context values to prevent unnecessary re-renders caused by redirectUnAuth
     const memoizedContext = useMemo(() => {

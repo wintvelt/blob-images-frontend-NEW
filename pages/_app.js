@@ -12,16 +12,28 @@ import NavBar from '../src/Components/NavBar/NavBar';
 import Copyright from '../src/Copyright';
 import Toolbar from '@mui/material/Toolbar';
 import { UserProvider } from '../src/Components/UserContext';
+import { toast, ToastContainer } from 'react-toastify';
+
+import 'react-toastify/dist/ReactToastify.min.css';
+import { useRouter } from 'next/router';
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
 export default function MyApp(props) {
     const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
+    const router = useRouter();
+    React.useEffect(() => {
+        if (router.isReady && router.query.toast) {
+            toast.info(router.query.toast)
+            router.replace(router.pathname)
+        }
+    }, [router.isReady, router.pathname])
 
     return (
         <CacheProvider value={emotionCache}>
             <Head>
+                <title>Clubalmanac</title>
                 <meta name="viewport" content="initial-scale=1, width=device-width" />
             </Head>
             <ThemeProvider theme={theme}>
@@ -31,6 +43,7 @@ export default function MyApp(props) {
                     <Toolbar />
                     <Component {...pageProps} />
                     <Copyright />
+                    <ToastContainer />
                 </UserProvider>
             </ThemeProvider>
         </CacheProvider>
