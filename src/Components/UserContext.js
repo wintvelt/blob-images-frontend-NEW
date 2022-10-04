@@ -11,7 +11,7 @@ const initialUser = { isAuthenticated: false };
 export function UserProvider({ children }) {
     const [user, setUser] = useState(initialUser);
     const router = useRouter();
-    const redirectUnAuth = (pathname = '/') => {
+    const redirectUnAuth = (pathname = '/login') => {
         if (!user.isAuthenticated) {
             router.push(`${pathname}?toast=${encodeURI("Log in om ledenpagina's te bezoeken")}`)
         }

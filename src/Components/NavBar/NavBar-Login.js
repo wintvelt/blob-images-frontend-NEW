@@ -19,7 +19,7 @@ export default function NavBarLogin(props) {
         return <UserMenu />
     }
 
-    if (router.pathname === 'login') return <></>;
+    if (router.pathname.includes('login')) return <></>;
     return <Button variant="contained" color="secondary" onClick={login}>
         Log in
     </Button>
