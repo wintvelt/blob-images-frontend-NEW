@@ -13,14 +13,18 @@ import Copyright from '../src/Copyright';
 import Toolbar from '@mui/material/Toolbar';
 import { UserProvider } from '../src/Components/UserContext';
 import { toast, ToastContainer } from 'react-toastify';
-
 import 'react-toastify/dist/ReactToastify.min.css';
 import { useRouter } from 'next/router';
+import { Amplify } from '@aws-amplify/core';
+import { config } from '../amplify.config';
+
+// configure Amplify, apparently to be done in root
+Amplify.configure(config);
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
-const stringUntilQ = (str) => str.slice(0,(str.indexOf('?')>=0)? str.indexOf('?') : str.length)
+const stringUntilQ = (str) => str.slice(0, (str.indexOf('?') >= 0) ? str.indexOf('?') : str.length)
 
 export default function MyApp(props) {
     const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
