@@ -20,6 +20,8 @@ import { useRouter } from 'next/router';
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
 
+const stringUntilQ = (str) => str.slice(0,(str.indexOf('?')>=0)? str.indexOf('?') : str.length)
+
 export default function MyApp(props) {
     const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
     const router = useRouter();
@@ -28,11 +30,10 @@ export default function MyApp(props) {
             toast.info(router.query.toast)
         }
     }, [router.isReady, router.pathname])
-
     return (
         <CacheProvider value={emotionCache}>
             <Head>
-                <title>Clubalmanac {router.pathname}</title>
+                <title>Clubalmanac {stringUntilQ(router.pathname)}</title>
                 <meta name="viewport" content="initial-scale=1, width=device-width" />
             </Head>
             <ThemeProvider theme={theme}>

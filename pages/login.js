@@ -10,16 +10,15 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
+import { useForm, Controller } from "react-hook-form";
 
 export default function SignInSide() {
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-    };
+    const { handleSubmit, control, reset } = useForm({
+        defaultValues: {
+            email: '',
+        }
+    });
+    const onSubmit = data => console.log(data);
 
     return (
         <Grid container component="main" sx={{ height: 'calc(100vh - 64px)' }}>
@@ -51,20 +50,25 @@ export default function SignInSide() {
                         <LockOutlinedIcon />
                     </Avatar>
                     <Typography component="h1" variant="h5">
-                        Sign in
+                        Welkom terug!
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
-                        <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            id="email"
-                            label="Email Address"
+                    <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
+                        <Controller
                             name="email"
-                            autoComplete="email"
-                            autoFocus
+                            control={control}
+                            rules={{ required: true }}
+                            render={({ field }) => <TextField
+                                margin="normal"
+                                required
+                                fullWidth
+                                id="email"
+                                label="Email adres"
+                                autoComplete="email"
+                                autoFocus
+                                {...field}
+                            />}
                         />
-                        <TextField
+                        {/* <TextField
                             margin="normal"
                             required
                             fullWidth
@@ -77,7 +81,7 @@ export default function SignInSide() {
                         <FormControlLabel
                             control={<Checkbox value="remember" color="primary" />}
                             label="Remember me"
-                        />
+                        /> */}
                         <Button
                             type="submit"
                             fullWidth
