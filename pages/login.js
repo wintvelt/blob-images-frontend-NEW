@@ -5,18 +5,27 @@ import Link from '../src/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import EmailField from '../src/Components/Forms/EmailField';
+import PasswordField from '../src/Components/Forms/PasswordField';
 
 export default function SignInSide() {
-    const { handleSubmit, control, reset } = useForm({
+    const { handleSubmit, control, setError, setFocus } = useForm({
         defaultValues: {
             email: '',
         }
     });
-    const onSubmit = data => console.log(data);
+
+    // autofocus does not work
+    React.useEffect(() => {
+        setFocus("email");
+      }, [setFocus]);
+
+    const onSubmit = data => {
+        setError("password", { type: 'custom', message: 'Ongeldige combinatie van email en password' })
+        console.log(data);
+    };
 
     return (
         <Grid container component="main" sx={{ height: 'calc(100vh - 64px)' }}>
@@ -45,13 +54,14 @@ export default function SignInSide() {
                     }}
                 >
                     <Avatar sx={{ m: 1, bgcolor: (t) => t.palette.grey[300] }}>
-                        <LockOutlinedIcon />
+                        👋
                     </Avatar>
                     <Typography component="h1" variant="h5">
                         Welkom terug!
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
+                    <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
                         <EmailField control={control} />
+                        <PasswordField control={control} />
                         {/* <TextField
                             margin="normal"
                             required
@@ -73,17 +83,17 @@ export default function SignInSide() {
                             color="secondary"
                             sx={{ mt: 3, mb: 2 }}
                         >
-                            Sign In
+                            Log in
                         </Button>
                         <Grid container>
                             <Grid item xs>
                                 <Link href="#" variant="body2">
-                                    Forgot password?
+                                    Wachtwoord vergeten?
                                 </Link>
                             </Grid>
                             <Grid item>
                                 <Link href="#" variant="body2">
-                                    {"Don't have an account? Sign Up"}
+                                    Aanmelden als feut
                                 </Link>
                             </Grid>
                         </Grid>
