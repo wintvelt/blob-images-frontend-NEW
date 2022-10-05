@@ -15,9 +15,10 @@ function EmailField({ control }) {
         defaultValue: "",
     });
 
-    const helperText = (errors.email?.type === 'required') ?
-        "Vul een geldig email adres in"
-        : " ";
+    const helperText = (errors.email) ?
+        // (errors.email.type === 'required' || errors.email.type === 'pattern') ?
+            "Vul een geldig email adres in"
+            : " ";
 
     return (
         <TextField
@@ -27,6 +28,7 @@ function EmailField({ control }) {
             name={name} // send down the input name
             inputRef={ref} // send input ref, so we can focus on input when error appear
             helperText={helperText}
+            error={!!errors.email}
             margin="normal"
             required
             fullWidth
