@@ -1,9 +1,6 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
 import Link from '../src/Link';
 import Paper from '@mui/material/Paper';
 import Box from '@mui/material/Box';
@@ -11,6 +8,7 @@ import Grid from '@mui/material/Grid';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { useForm, Controller } from "react-hook-form";
+import EmailField from '../src/Components/Forms/EmailField';
 
 export default function SignInSide() {
     const { handleSubmit, control, reset } = useForm({
@@ -53,21 +51,7 @@ export default function SignInSide() {
                         Welkom terug!
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 1 }}>
-                        <Controller
-                            name="email"
-                            control={control}
-                            rules={{ required: true }}
-                            render={({ field }) => <TextField
-                                margin="normal"
-                                required
-                                fullWidth
-                                id="email"
-                                label="Email adres"
-                                autoComplete="email"
-                                autoFocus
-                                {...field}
-                            />}
-                        />
+                        <EmailField control={control} />
                         {/* <TextField
                             margin="normal"
                             required

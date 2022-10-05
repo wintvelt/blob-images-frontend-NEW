@@ -33,7 +33,7 @@ export default function MyApp(props) {
     return (
         <CacheProvider value={emotionCache}>
             <Head>
-                <title>Clubalmanac {stringUntilQ(router.pathname)}</title>
+                <title>{`Clubalmanac ${stringUntilQ(router.pathname)}`}</title>
                 <meta name="viewport" content="initial-scale=1, width=device-width" />
             </Head>
             <ThemeProvider theme={theme}>
