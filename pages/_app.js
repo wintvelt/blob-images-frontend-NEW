@@ -16,10 +16,11 @@ import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { useRouter } from 'next/router';
 import { Amplify } from '@aws-amplify/core';
-import { config } from '../amplify.config';
+import { amplifyConfig } from '../amplify.config';
 
 // configure Amplify, apparently to be done in root
-Amplify.configure(config);
+Amplify.configure(amplifyConfig);
+console.log(amplifyConfig)
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();

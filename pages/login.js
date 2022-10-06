@@ -9,6 +9,7 @@ import Typography from '@mui/material/Typography';
 import { useForm } from "react-hook-form";
 import EmailField from '../src/Components/Forms/EmailField';
 import PasswordField from '../src/Components/Forms/PasswordField';
+import { Auth } from 'aws-amplify';
 
 export default function SignInSide() {
     const { handleSubmit, control, setError, setFocus } = useForm({
@@ -20,11 +21,16 @@ export default function SignInSide() {
     // autofocus does not work
     React.useEffect(() => {
         setFocus("email");
-      }, [setFocus]);
+    }, [setFocus]);
 
-    const onSubmit = data => {
-        setError("password", { type: 'custom', message: 'Ongeldige combinatie van email en password' })
-        console.log(data);
+    const onSubmit = async data => {
+        try {
+            const user = await Auth.signIn(data.email, data.password);
+            console.log(user);
+        } catch (error) {
+            console.log('error signing in', error);
+        }
+        //     // setError("password", { type: 'custom', message: 'Ongeldige combinatie van email en password' })
     };
 
     return (
