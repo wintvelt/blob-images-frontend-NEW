@@ -33,7 +33,7 @@ export default function MyApp(props) {
         if (router.isReady && router.query.toast) {
             toast.info(router.query.toast)
         }
-    }, [router.isReady, router.pathname])
+    }, [router.isReady, router.pathname, router.query.toast])
     return (
         <CacheProvider value={emotionCache}>
             <Head>

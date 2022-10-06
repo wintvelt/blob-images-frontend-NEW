@@ -6,10 +6,11 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Avatar } from '@mui/material';
 import { useUser } from '../UserContext';
 import { Auth } from 'aws-amplify';
+import { makeImageUrl } from '../../utils/image-helper';
 
 const avatarStyle = {
     width: '1.5em', height: '1.5em', marginRight: '.5em',
-    bgcolor: 'secondary'
+    bgcolor: 'grey'
 };
 const noTransform = { textTransform: 'none' }
 
@@ -43,7 +44,7 @@ function UserMenu() {
             sx={noTransform}
             endIcon={<ExpandMore />}
         >
-            <Avatar sx={avatarStyle} alt={name}>
+            <Avatar sx={avatarStyle} alt={name} src={makeImageUrl(user.photoUrl, 40, 40)}>
                 {name[0]}
             </Avatar>
             {name}

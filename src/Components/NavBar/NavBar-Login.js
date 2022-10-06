@@ -1,11 +1,7 @@
 import { Button } from "@mui/material";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { useUser } from "../UserContext";
-// import UserMenu from "./NavBar-UserMenu";
-
-const UserMenu = dynamic(() => import('./NavBar-UserMenu'));
-
+import UserMenu from "./NavBar-UserMenu";
 
 export default function NavBarLogin(props) {
     const { user } = useUser();

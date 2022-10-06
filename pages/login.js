@@ -10,7 +10,8 @@ import { useForm } from "react-hook-form";
 import EmailField from '../src/Components/Forms/EmailField';
 import { useUser } from '../src/Components/UserContext';
 import PasswordField from '../src/Components/Forms/PasswordField';
-import { Auth } from 'aws-amplify';
+import { API, Auth } from 'aws-amplify';
+import { CircularProgress } from '@mui/material';
 
 export default function SignInSide() {
     const { handleSubmit, control, setError, setFocus } = useForm({
@@ -18,27 +19,33 @@ export default function SignInSide() {
             email: '',
         }
     });
-    const { user, setUser } = useUser();
+    const { setUser } = useUser();
+    const [ isLoading, setIsLoading ] = React.useState(false);
 
     // autofocus does not work
     React.useEffect(() => {
+        // TODO: check if user is already logged in, then redirect
         setFocus("email");
     }, [setFocus]);
 
     const onSubmit = async data => {
         try {
+            setIsLoading(true);
             const authResult = await Auth.signIn(data.email, data.password);
-            setUser({
+            const userData = await API.get('blob-images', `/user`);
+            const newUser = {
                 isAuthenticated: true,
                 name: authResult.attributes["custom:name"],
-                email: authResult.attributes.email
-            })
-            // TODO: get user details
+                email: authResult.attributes.email,
+                photoUrl: userData.photoUrl
+            };
+            setUser(newUser);
             // TODO: redirect after login
         } catch (error) {
             console.log('error signing in', error);
         }
-        //     // setError("password", { type: 'custom', message: 'Ongeldige combinatie van email en password' })
+        setIsLoading(false);
+        // setError("password", { type: 'custom', message: 'Ongeldige combinatie van email en password' })
     };
 
     return (
@@ -76,28 +83,15 @@ export default function SignInSide() {
                     <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
                         <EmailField control={control} />
                         <PasswordField control={control} />
-                        {/* <TextField
-                            margin="normal"
-                            required
-                            fullWidth
-                            name="password"
-                            label="Password"
-                            type="password"
-                            id="password"
-                            autoComplete="current-password"
-                        />
-                        <FormControlLabel
-                            control={<Checkbox value="remember" color="primary" />}
-                            label="Remember me"
-                        /> */}
                         <Button
                             type="submit"
                             fullWidth
                             variant="contained"
                             color="secondary"
                             sx={{ mt: 3, mb: 2 }}
+                            disabled={isLoading}
                         >
-                            Log in
+                            {isLoading? <CircularProgress size='1.75rem'/> : 'Log in'}
                         </Button>
                         <Grid container>
                             <Grid item xs>

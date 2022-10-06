@@ -71,5 +71,6 @@ export const amplifyConfig = {
                 region: config.apiGateway.REGION,
             }
         ]
-    }
+    },
+    ssr: true
 };

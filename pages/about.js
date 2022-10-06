@@ -8,7 +8,9 @@ import { useUser } from '../src/Components/UserContext';
 
 export default function About() {
     const { redirectUnAuth, user } = useUser();
-    React.useEffect(() => redirectUnAuth(), [user]);
+    React.useEffect(() => {
+        redirectUnAuth()
+    }, [user, redirectUnAuth]);
     // const boxMargin = { my: 4 }
     const boxMargin = { backgroundColor: '#00ccee' }
     return (
