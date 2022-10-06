@@ -8,6 +8,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { useForm } from "react-hook-form";
 import EmailField from '../src/Components/Forms/EmailField';
+import { useUser } from '../src/Components/UserContext';
 import PasswordField from '../src/Components/Forms/PasswordField';
 import { Auth } from 'aws-amplify';
 
@@ -17,6 +18,7 @@ export default function SignInSide() {
             email: '',
         }
     });
+    const { user, setUser } = useUser();
 
     // autofocus does not work
     React.useEffect(() => {
@@ -25,8 +27,14 @@ export default function SignInSide() {
 
     const onSubmit = async data => {
         try {
-            const user = await Auth.signIn(data.email, data.password);
-            console.log(user);
+            const authResult = await Auth.signIn(data.email, data.password);
+            setUser({
+                isAuthenticated: true,
+                name: authResult.attributes["custom:name"],
+                email: authResult.attributes.email
+            })
+            // TODO: get user details
+            // TODO: redirect after login
         } catch (error) {
             console.log('error signing in', error);
         }

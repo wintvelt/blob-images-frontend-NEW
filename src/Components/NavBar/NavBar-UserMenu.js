@@ -5,6 +5,7 @@ import MenuItem from "@mui/material/MenuItem";
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Avatar } from '@mui/material';
 import { useUser } from '../UserContext';
+import { Auth } from 'aws-amplify';
 
 const avatarStyle = {
     width: '1.5em', height: '1.5em', marginRight: '.5em',
@@ -23,7 +24,12 @@ function UserMenu() {
     const handleClose = () => {
         setAnchorEl(null);
     };
-    const handleLogout = () => {
+    const handleLogout = async () => {
+        try {
+            await Auth.signOut();
+        } catch (error) {
+            console.log('error signing out: ', error);
+        }
         setUser({ isAuthenticated: false });
     };
     return <>

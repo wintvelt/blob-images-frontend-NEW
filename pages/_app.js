@@ -20,7 +20,6 @@ import { amplifyConfig } from '../amplify.config';
 
 // configure Amplify, apparently to be done in root
 Amplify.configure(amplifyConfig);
-console.log(amplifyConfig)
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
