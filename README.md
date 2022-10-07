@@ -39,6 +39,14 @@ export async function getServerSideProps(context) {
 }
 ```
 
+## Links
+In links to protected pages,
+- use the custom `Link` component
+- add a `protected={true}` prop
+
+This will add a check if user is logged in.
+If not, the link will not work and a toast will be shown.
+
 ### Redirects
 Whenever a redirect takes place - e.g. someone not logged in visits a private page - they will be redirected to the login page, and a message appears (as a toast).
 
