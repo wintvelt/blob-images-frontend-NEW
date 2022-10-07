@@ -5,6 +5,8 @@ import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import MuiLink from '@mui/material/Link';
 import { styled } from '@mui/material/styles';
+import { useUser } from './Components/UserContext';
+import { toast } from 'react-toastify';
 
 // Add support for the sx prop for consistency with the other branches.
 const Anchor = styled('a')({});
@@ -60,6 +62,15 @@ const Link = React.forwardRef(function Link(props, ref) {
     } = props;
 
     const router = useRouter();
+    const { user } = useUser()
+
+    const onProtectedClick = async (e) => {
+        if (!user.isAuthenticated) {
+            toast.error('Log eerst even in', { toastId: 'login-required' })
+            e.preventDefault()
+        }
+    }
+
     const pathname = typeof href === 'string' ? href : href.pathname;
     const className = clsx(classNameProps, {
         [activeClassName]: router.pathname === pathname && activeClassName,
@@ -80,7 +91,13 @@ const Link = React.forwardRef(function Link(props, ref) {
     const nextjsProps = { to: href, linkAs, replace, scroll, shallow, prefetch, locale };
 
     if (noLinkStyle) {
-        return <NextLinkComposed className={className} ref={ref} {...nextjsProps} {...other} />;
+        return <NextLinkComposed 
+        className={className} 
+        ref={ref} 
+        {...nextjsProps} 
+        {...other} 
+        onClick={onProtectedClick}
+        />;
     }
 
     return (
@@ -90,6 +107,7 @@ const Link = React.forwardRef(function Link(props, ref) {
             ref={ref}
             {...nextjsProps}
             {...other}
+            onClick={onProtectedClick}
         />
     );
 });
@@ -110,3 +128,8 @@ Link.propTypes = {
 };
 
 export default Link;
+
+// add intervening check on Auth for internal links to protected pages
+export const ProtectedLink = React.forwardRef(function ProtectedLink(props, ref) {
+    return <Link ref={ref} protected={true} {...props} />
+});

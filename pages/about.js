@@ -4,26 +4,33 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ProTip from '../src/ProTip';
 import Link from '../src/Link';
-import { useUser } from '../src/Components/UserContext';
+import { getSSRUser, Protected } from '../src/Components/Protected';
+
+const boxMargin = { backgroundColor: '#00ccee' }
 
 export default function About() {
-    const { redirectUnAuth, user } = useUser();
-    React.useEffect(() => {
-        redirectUnAuth()
-    }, [user, redirectUnAuth]);
-    // const boxMargin = { my: 4 }
-    const boxMargin = { backgroundColor: '#00ccee' }
     return (
-        <Container maxWidth="sm" sx={boxMargin}>
-            <Box sx={{ my: 4 }}>
-                <Typography variant="h4" component="h1" gutterBottom>
-                    Next.js example
-                </Typography>
-                <Link href="/about">
-                    Go to the about page
-                </Link>
-                <ProTip />
-            </Box>
-        </Container>
-    );
+        <Protected>
+            <Container maxWidth="sm" sx={boxMargin}>
+                <Box sx={{ my: 4 }}>
+                    <Typography variant="h4" component="h1" gutterBottom>
+                        Next.js example
+                    </Typography>
+                    <Link href="/about">
+                        Go to the about page
+                    </Link>
+                    <ProTip />
+                </Box>
+            </Container>
+        </Protected>
+    )
+}
+
+export async function getServerSideProps(context) {
+    const user = await getSSRUser(context);
+    return {
+        props: {
+            user
+        }
+    }
 }

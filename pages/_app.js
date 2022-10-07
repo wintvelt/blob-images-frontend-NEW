@@ -42,12 +42,12 @@ export default function MyApp(props) {
             </Head>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <UserProvider>
+                <UserProvider ssrUser={pageProps.user}>
                     <NavBar />
                     <Toolbar />
                     <Component {...pageProps} />
                     <Copyright />
-                    <ToastContainer position='top-center'/>
+                    <ToastContainer position='top-center' />
                 </UserProvider>
             </ThemeProvider>
         </CacheProvider>

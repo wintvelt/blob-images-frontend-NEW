@@ -9,20 +9,8 @@ const UserContext = createContext({
 });
 const initialUser = { isAuthenticated: false };
 
-export function UserProvider({ children }) {
-    const [user, setUser] = useState(initialUser);
-    const router = useRouter();
-
-    const redirectUnAuth = async (pathname = '/login') => {
-        try {
-            await Auth.currentAuthenticatedUser()
-        } catch (error) {
-            router.replace(
-                `${pathname}?toast=${encodeURI("Log in om ledenpagina's te bezoeken")}`,
-                `${pathname}`,
-            );
-        }
-    };
+export function UserProvider({ ssrUser, children }) {
+    const [user, setUser] = useState(ssrUser || initialUser);
 
     useEffect(() => {
         const getAuthUser = async () => {
@@ -40,12 +28,12 @@ export function UserProvider({ children }) {
                 console.log(`error getting auth user: "${error}"`)
             }
         }
-        getAuthUser();
+        if (!user.isAuthenticated) getAuthUser();
     }, [])
 
     // memoized to prevent unnecessary re-renders. NB: Ignore the warning in build on dependencies
     const memoizedContext = useMemo(() => {
-        return { user, setUser, redirectUnAuth }
+        return { user, setUser }
     }, [user.isAuthenticated, user.name, user.email, user.photoUrl]);
 
     return (

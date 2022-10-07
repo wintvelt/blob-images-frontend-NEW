@@ -12,6 +12,7 @@ import { useUser } from '../src/Components/UserContext';
 import PasswordField from '../src/Components/Forms/PasswordField';
 import { API, Auth } from 'aws-amplify';
 import { CircularProgress } from '@mui/material';
+import { useRouter } from 'next/router';
 
 export default function SignInSide() {
     const { handleSubmit, control, setError, setFocus } = useForm({
@@ -21,6 +22,7 @@ export default function SignInSide() {
     });
     const { setUser } = useUser();
     const [ isLoading, setIsLoading ] = React.useState(false);
+    const router = useRouter();
 
     // autofocus does not work
     React.useEffect(() => {
@@ -40,7 +42,8 @@ export default function SignInSide() {
                 photoUrl: userData.photoUrl
             };
             setUser(newUser);
-            // TODO: redirect after login
+            // redirect after login
+            if (router.query.redirectTo) router.push(router.query.redirectTo)
         } catch (error) {
             console.log('error signing in', error);
         }
