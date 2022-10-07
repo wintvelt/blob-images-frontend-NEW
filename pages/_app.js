@@ -47,7 +47,7 @@ export default function MyApp(props) {
                     <Toolbar />
                     <Component {...pageProps} />
                     <Copyright />
-                    <ToastContainer />
+                    <ToastContainer position='top-center'/>
                 </UserProvider>
             </ThemeProvider>
         </CacheProvider>
