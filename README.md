@@ -41,8 +41,10 @@ export async function getServerSideProps(context) {
 
 ## Links
 In links to protected pages,
-- use the custom `Link` component
-- add a `protected={true}` prop
+- use the custom `ProtectedLink` component
+- or the default `Link` component 
+    - this will check - with `isProtectedRoute()` - if the destination is a protected route
+    - you can force by adding a `isProtected={true}` prop
 
 This will add a check if user is logged in.
 If not, the link will not work and a toast will be shown.

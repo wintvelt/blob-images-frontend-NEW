@@ -7,6 +7,7 @@ import MuiLink from '@mui/material/Link';
 import { styled } from '@mui/material/styles';
 import { useUser } from './Components/UserContext';
 import { toast } from 'react-toastify';
+import { isProtectedRoute } from './utils/route-helper';
 
 // Add support for the sx prop for consistency with the other branches.
 const Anchor = styled('a')({});
@@ -58,6 +59,7 @@ const Link = React.forwardRef(function Link(props, ref) {
         role, // Link don't have roles.
         scroll,
         shallow,
+        isProtected,
         ...other
     } = props;
 
@@ -65,6 +67,7 @@ const Link = React.forwardRef(function Link(props, ref) {
     const { user } = useUser()
 
     const onProtectedClick = async (e) => {
+        if (!isProtected && !isProtectedRoute(href)) return
         if (!user.isAuthenticated) {
             toast.error('Log eerst even in', { toastId: 'login-required' })
             e.preventDefault()
@@ -121,6 +124,7 @@ Link.propTypes = {
     locale: PropTypes.string,
     noLinkStyle: PropTypes.bool,
     prefetch: PropTypes.bool,
+    isProtected: PropTypes.bool,
     replace: PropTypes.bool,
     role: PropTypes.string,
     scroll: PropTypes.bool,
@@ -131,5 +135,5 @@ export default Link;
 
 // add intervening check on Auth for internal links to protected pages
 export const ProtectedLink = React.forwardRef(function ProtectedLink(props, ref) {
-    return <Link ref={ref} protected={true} {...props} />
+    return <Link ref={ref} isProtected={true} {...props} />
 });

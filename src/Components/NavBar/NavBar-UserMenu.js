@@ -7,6 +7,8 @@ import { Avatar } from '@mui/material';
 import { useUser } from '../UserContext';
 import { Auth } from 'aws-amplify';
 import { makeImageUrl } from '../../utils/image-helper';
+import { useRouter } from 'next/router';
+import { isProtectedRoute } from '../../utils/route-helper';
 
 const avatarStyle = {
     width: '1.5em', height: '1.5em', marginRight: '.5em',
@@ -18,6 +20,7 @@ function UserMenu() {
     const [anchorEl, setAnchorEl] = useState(null);
     const { user, setUser } = useUser();
     const { name } = user;
+    const router = useRouter();
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -28,6 +31,10 @@ function UserMenu() {
     const handleLogout = async () => {
         try {
             await Auth.signOut();
+            if (isProtectedRoute(router.pathname)) {
+                const msg = encodeURI("Terug naar homepage omdat je bent uitgelogd");
+                router.push(`/?toast=${msg}`, '/');
+            }
         } catch (error) {
             console.log('error signing out: ', error);
         }
