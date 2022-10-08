@@ -14,8 +14,8 @@ export default function Index() {
                 <Typography variant="h4" component="h1" gutterBottom>
                     Next.js example
                 </Typography>
-                <Link href="/about" protected={true}>
-                    Go to the about page
+                <Link href="/groups/GnDhE9WzayoleqJ_" protected={true}>
+                    Go to a protected groups page
                 </Link>
                 <ProTip />
             </Box>

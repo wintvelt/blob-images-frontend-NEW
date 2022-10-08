@@ -46,3 +46,17 @@ export async function getSSRUser(context) {
         return { isAuthenticated: false }
     }
 }
+
+export async function getSSRGroup(context) {
+    const route = context.resolvedUrl;
+    if (!route) return undefined
+    
+    const { API } = withSSRContext(context)
+    try {
+        const group = await API.get('blob-images', `/groups/${activeGroupId}`)
+    } catch (error) {
+        return undefined
+    }
+    
+    const groupData = API.get()
+}

@@ -73,7 +73,6 @@ const Link = React.forwardRef(function Link(props, ref) {
             e.preventDefault()
         }
     }
-
     const pathname = typeof href === 'string' ? href : href.pathname;
     const className = clsx(classNameProps, {
         [activeClassName]: router.pathname === pathname && activeClassName,
