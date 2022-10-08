@@ -14,10 +14,10 @@ export default function About() {
             <Container maxWidth="sm" sx={boxMargin}>
                 <Box sx={{ my: 4 }}>
                     <Typography variant="h4" component="h1" gutterBottom>
-                        Next.js example
+                        Protected page
                     </Typography>
-                    <Link href="/about">
-                        Go to the about page
+                    <Link href="/">
+                        Go to home page
                     </Link>
                     <ProTip />
                 </Box>
