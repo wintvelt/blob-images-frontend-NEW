@@ -31,15 +31,14 @@ export function Protected({ children }) {
 }
 
 export async function getSSRUser(context) {
-    const { Auth, API } = withSSRContext(context)
+    const { Auth } = withSSRContext(context)
     try {
         const authResult = await Auth.currentAuthenticatedUser();
-        const userData = await API.get('blob-images', `/user`);
         const user = {
             isAuthenticated: true,
             name: authResult.attributes["custom:name"],
             email: authResult.attributes.email,
-            photoUrl: userData.photoUrl
+            hasDbData: false
         };
         return user
     } catch (err) {
