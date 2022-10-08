@@ -2,11 +2,11 @@ import ClubLogo from "../../../public/ca_icon_dark_sm.png";
 import ClubWord from "../../../public/ca_wordmark_sm.png";
 import IconButton from "@mui/material/IconButton";
 import Image from "next/image";
-import { useRouter } from "next/router";
-import { isChildRoute, previousRoute } from "../../utils/route-helper";
 import Link from "../../Link";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import Typography from "@mui/material/Typography";
+import { API } from "aws-amplify";
+import { useQuery } from '@tanstack/react-query';
 
 const HomeIcon = () => <>
     <Link href="/">
@@ -23,23 +23,31 @@ const HomeIcon = () => <>
 
 const backrouteStyle = { display: 'flex', textDecoration: 'none' };
 
-const BackRoute = ({ pathname }) => {
-    const prevRoute = previousRoute(pathname);
-    // TODO: get route name from database via API
+const BackRoute = ({ groupId, albumId, backRoute }) => {
+    const group = useQuery(['groups', groupId], () => API.get('blob-images', `/groups/${groupId}`));
+    const album = useQuery(['albums', albumId], () => API.get('blob-images', `/groups/${groupId}/albums/${albumId}`));
 
-    return <Link href={prevRoute} color="inherit" sx={backrouteStyle}>
+    // TODO: show the right title depending on type of backroute
+    const name = (album.isSuccess && backRoute.split('?')[0].split('/').length === 5) ?
+        album.data.name
+        : (group.isSuccess && backRoute.split('?')[0].split('/').length === 3) ?
+            group.data.name
+            : (backRoute === '/groups') ? 'Mijn groepen'
+                : (backRoute === '/photos') ? "Mijn foto's"
+                    : "Terug"
+
+    return <Link href={backRoute} color="inherit" sx={backrouteStyle}>
         <KeyboardArrowLeft />
         <Typography>
-            {prevRoute}
+            {name}
         </Typography>
     </Link>
 }
 
 export default function NavBarLeft(props) {
-    const router = useRouter();
-    const isChild = isChildRoute(router.pathname);
+    const isChild = (props.backRoute !== '/');
     return <>
         {!isChild && <HomeIcon />}
-        {isChild && <BackRoute pathname={router.pathname} />}
+        {isChild && <BackRoute {...props} />}
     </>
 }

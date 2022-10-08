@@ -17,12 +17,15 @@ import 'react-toastify/dist/ReactToastify.min.css';
 import { useRouter } from 'next/router';
 import { Amplify } from '@aws-amplify/core';
 import { amplifyConfig } from '../amplify.config';
+import { QueryClientProvider, QueryClient } from '@tanstack/react-query';
 
 // configure Amplify, apparently to be done in root
 Amplify.configure(amplifyConfig);
 
 // Client-side cache, shared for the whole session of the user in the browser.
 const clientSideEmotionCache = createEmotionCache();
+
+const queryClient = new QueryClient();
 
 const stringUntilQ = (str) => str.slice(0, (str.indexOf('?') >= 0) ? str.indexOf('?') : str.length)
 
@@ -43,10 +46,12 @@ export default function MyApp(props) {
             <ThemeProvider theme={theme}>
                 <CssBaseline />
                 <UserProvider ssrUser={pageProps.user}>
-                    <NavBar />
-                    <Toolbar />
-                    <Component {...pageProps} />
-                    <Copyright />
+                    <QueryClientProvider client={queryClient}>
+                        <NavBar {...pageProps}/>
+                        <Toolbar />
+                        <Component {...pageProps} />
+                        <Copyright />
+                    </QueryClientProvider>
                     <ToastContainer position='top-center' />
                 </UserProvider>
             </ThemeProvider>

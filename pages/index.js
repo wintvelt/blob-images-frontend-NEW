@@ -4,6 +4,7 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ProTip from '../src/ProTip';
 import Link from '../src/Link';
+import { getSSRRoute } from '../src/utils/route-helper';
 
 export default function Index() {
     const boxStyle = { my: 4 };
@@ -21,4 +22,13 @@ export default function Index() {
             </Box>
         </Container>
     );
+}
+
+export async function getServerSideProps(context) {
+    const routeData = getSSRRoute(context)
+    return {
+        props: {
+            ...routeData
+        }
+    }
 }
