@@ -9,7 +9,7 @@ Using
 
 ### How AUTH works
 Every protected page needs
-- `export ... getServerSideProps` to check server side if the user is authenticated
+- `export ... getServerSideProps` to check server side if the user is authenticated, and to pass any user info to pageProps
 - in the default export function:
     - a call in `useEffect` to `redirectUnAuth(pathname)` to catch client side navigation to protected page too, and navigate to login page if needed
 - conditional rendering of the content
@@ -17,6 +17,12 @@ Every protected page needs
 
 All this is bundled in the `Protected.js` component
 
+The main _app contains a `UserContext` provider, that stores all user info.
+The Context provider also has a client side useEffect, which checks if a user is authenticated. If so, it retrieves user info from the DB. This is done on client side in a useEffect, so only once, to prevent unnecessary API calls to the DB: if it would be done in `getServerSideProps`, next would make a db call on every page visited, even if the user details are already known client-side.
+For the basic auth info, this is not needed, because the user details are passed to the server in the request context.
+
+
+#### Usage
 In the page file
 ``` js
     return (

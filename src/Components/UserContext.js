@@ -28,7 +28,24 @@ export function UserProvider({ ssrUser, children }) {
                 console.log(`error getting auth user: "${error}"`)
             }
         }
-        if (!user.isAuthenticated) getAuthUser();
+        const getUserDbData = async () => {
+            try {
+                const userData = await API.get('blob-images', `/user`);
+                const newUser = {
+                    ...user,
+                    photoUrl: userData.photoUrl,
+                    hasDbData: true
+                };
+                setUser(newUser);
+            } catch (error) {
+                console.log(`error getting auth user: "${error}"`)
+            }
+        }
+        if (!user.isAuthenticated) {
+            getAuthUser();
+        } else if (!user.hasDbData) {
+            getUserDbData();
+        };
     }, [])
 
     // memoized to prevent unnecessary re-renders. NB: Ignore the warning in build on dependencies
