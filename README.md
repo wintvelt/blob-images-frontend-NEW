@@ -39,7 +39,11 @@ export async function getServerSideProps(context) {
 }
 ```
 
-## Links
+For normal pages
+- No need for SSR auth checking, this would unnecessarily slow down load time
+- For the Login button/ User menu, the auth check is done client side - causing rerender if user is logged in
+
+### Links
 In links to protected pages,
 - use the custom `ProtectedLink` component
 - or the default `Link` component 
