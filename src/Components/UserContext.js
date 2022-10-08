@@ -1,5 +1,4 @@
 import { API, Auth } from 'aws-amplify';
-import { useRouter } from 'next/router';
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 const UserContext = createContext({
@@ -51,7 +50,7 @@ export function UserProvider({ ssrUser, children }) {
     // memoized to prevent unnecessary re-renders. NB: Ignore the warning in build on dependencies
     const memoizedContext = useMemo(() => {
         return { user, setUser }
-    }, [user.isAuthenticated, user.name, user.email, user.photoUrl]);
+    }, [user.isAuthenticated, user.name, user.email, user.photoUrl, user.hasDbData]);
 
     return (
         <UserContext.Provider value={memoizedContext}>

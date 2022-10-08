@@ -28,7 +28,6 @@ export default function GroupPage() {
 
 export async function getServerSideProps(context) {
     const user = await getSSRUser(context);
-    const group = (user.isAuthenticated)? await getSSRGroup(context) : undefined;
     return {
         props: {
             user

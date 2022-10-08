@@ -12,7 +12,7 @@ export default function Index() {
         <Container maxWidth="sm">
             <Box sx={boxStyle}>
                 <Typography variant="h4" component="h1" gutterBottom>
-                    Next.js example
+                    Example Home page
                 </Typography>
                 <Link href="/groups/GnDhE9WzayoleqJ_" protected={true}>
                     Go to a protected groups page
