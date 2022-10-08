@@ -10,6 +10,7 @@ Using
 ### How AUTH works
 Every protected page needs
 - `export ... getServerSideProps` to check server side if the user is authenticated, and to pass any user info to pageProps
+    - should also be included on public pages, because every page displays navbar with user menu
 - in the default export function:
     - a call in `useEffect` to `redirectUnAuth(pathname)` to catch client side navigation to protected page too, and navigate to login page if needed
 - conditional rendering of the content
@@ -49,12 +50,32 @@ For normal pages
 - No need for SSR auth checking, this would unnecessarily slow down load time
 - For the Login button/ User menu, the auth check is done client side - causing rerender if user is logged in
 
+### How nav works
+Every page needs a `getServerSideProps`, 
+- to retrieve the route from the request, and populate props with `groupId`, `albumId`, and `backRoute` if relevant
+- these are used by the `NavBar` and `NavBar-Left` components, to render the right back links
+- The db data with names for Group and Album are retrieved at client side, to prevent unnecessary db calls
+
+`route-helpers` exposes a `getSSRRoute()` function, that can be called as follows
+``` js
+export async function getServerSideProps(context) {
+    const user = await getSSRUser(context);
+    const routeData = getSSRRoute(context)
+    return {
+        props: {
+            user,
+            ...routeData
+        }
+    }
+}
+```
+
 ### Links
 In links to protected pages,
-- use the custom `ProtectedLink` component
-- or the default `Link` component 
-    - this will check - with `isProtectedRoute()` - if the destination is a protected route
+- the default `Link` component 
+    - will check - with `isProtectedRoute()` - if the destination is a protected route
     - you can force by adding a `isProtected={true}` prop
+- or you can use the custom `ProtectedLink` component to make it more explicit
 
 This will add a check if user is logged in.
 If not, the link will not work and a toast will be shown.
