@@ -24,8 +24,20 @@ const HomeIcon = () => <>
 const backrouteStyle = { display: 'flex', textDecoration: 'none' };
 
 const BackRoute = ({ groupId, albumId, backRoute }) => {
-    const group = useQuery(['groups', groupId], () => API.get('blob-images', `/groups/${groupId}`));
-    const album = useQuery(['albums', albumId], () => API.get('blob-images', `/groups/${groupId}/albums/${albumId}`));
+    const group = useQuery(['groups', groupId], ({ signal }) => {
+        const promise = API.get('blob-images', `/groups/${groupId}`);
+        signal?.addEventListener('abort', () => {
+            API.cancel(promise, "canceled group get");
+        });
+        return promise;
+    });
+    const album = useQuery(['albums', albumId], ({ signal }) => {
+        const promise = API.get('blob-images', `/groups/${groupId}/albums/${albumId}`);
+        signal?.addEventListener('abort', () => {
+            API.cancel(promise, "canceled album get");
+        });
+        return promise;
+    });
 
     // TODO: show the right title depending on type of backroute
     const name = (album.isSuccess && backRoute.split('?')[0].split('/').length === 5) ?
