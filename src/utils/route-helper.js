@@ -3,9 +3,9 @@ export const getSSRRoute = (context) => {
     const path = context.resolvedUrl;
     const pathSegments = path.split('?')[0].split('/')
     const groupIdx = pathSegments.findIndex(v => (v === 'groups'))
-    const groupId = pathSegments[groupIdx + 1]
+    const groupId = pathSegments[groupIdx + 1] || null
     const albumIdx = pathSegments.findIndex(v => (v === 'albums'))
-    const albumId = pathSegments[albumIdx + 1]
+    const albumId = pathSegments[albumIdx + 1] || null
 
     const backRoute = (pathSegments.length < 3) ?
         '/'
