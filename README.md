@@ -52,7 +52,7 @@ For normal pages
 
 ### How nav works
 Every page needs a `getServerSideProps`, 
-- to retrieve the route from the request, and populate props with `groupId`, `albumId`, and `backRoute` if relevant
+- to retrieve the route from the request, and populate props with `path`, and - if relevant - `groupId`, `albumId`,  `backRoute`
 - these are used by the `NavBar` and `NavBar-Left` components, to render the right back links
 - The db data with names for Group and Album are retrieved at client side, to prevent unnecessary db calls
 
