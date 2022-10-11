@@ -50,7 +50,7 @@ const Link = React.forwardRef(function Link(props, ref) {
         activeClassName = 'active',
         as,
         className: classNameProps,
-        href,
+        href = '/',
         linkAs: linkAsProp,
         locale,
         noLinkStyle,

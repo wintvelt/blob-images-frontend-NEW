@@ -57,7 +57,7 @@ const BackRoute = ({ groupId, albumId, backRoute }) => {
 }
 
 export default function NavBarLeft(props) {
-    const isChild = (props.backRoute !== '/');
+    const isChild = (props.backRoute && props.backRoute !== '/');
     return <>
         {!isChild && <HomeIcon />}
         {isChild && <BackRoute {...props} />}

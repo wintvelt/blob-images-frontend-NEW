@@ -8,10 +8,21 @@ import { getSSRUser, Protected } from '../../src/Components/Protected';
 import { getSSRRoute } from '../../src/utils/route-helper';
 
 const boxMargin = { backgroundColor: '#00ccee' }
+const bgImgStyle = {
+    backgroundImage: "url(https://picsum.photos/2000/500)", /* The image used */
+    backgroundColor: '#cccccc', /* Used if the image is unavailable */
+    height: '16rem', /* You must set a specified height */
+    backgroundPosition: 'center', /* Center the image */
+    backgroundRepeat: 'no-repeat', /* Do not repeat the image */
+    backgroundSize: 'cover' /* Resize the background image to cover the entire container */
+}
 
 export default function MyGroupsPage() {
     return (
         <Protected>
+            <Container sx={bgImgStyle}>
+                DUH
+            </Container>
             <Container maxWidth="sm" sx={boxMargin}>
                 <Box sx={{ my: 4 }}>
                     <Typography variant="h4" component="h1" gutterBottom>
