@@ -30,14 +30,14 @@ const BackRoute = ({ groupId, albumId, backRoute }) => {
             API.cancel(promise, "canceled group get");
         });
         return promise;
-    });
+    }, { enabled: !!groupId });
     const album = useQuery(['albums', albumId], ({ signal }) => {
         const promise = API.get('blob-images', `/groups/${groupId}/albums/${albumId}`);
         signal?.addEventListener('abort', () => {
             API.cancel(promise, "canceled album get");
         });
         return promise;
-    });
+    }, { enabled: !!albumId });
 
     // TODO: show the right title depending on type of backroute
     const name = (album.isSuccess && backRoute.split('?')[0].split('/').length === 5) ?

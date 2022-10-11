@@ -6,7 +6,7 @@ const UserContext = createContext({
     setUser: async (user) => null,
     redirectUnAuth: async () => null,
 });
-const initialUser = { isAuthenticated: false };
+const initialUser = { isAuthenticated: false, hasDbData: false };
 
 export function UserProvider({ ssrUser, children }) {
     const [user, setUser] = useState(ssrUser || initialUser);
@@ -20,7 +20,10 @@ export function UserProvider({ ssrUser, children }) {
                     isAuthenticated: true,
                     name: authResult.attributes["custom:name"],
                     email: authResult.attributes.email,
-                    photoUrl: userData.photoUrl
+                    photoUrl: userData.photoUrl,
+                    photoCount: userData.photoCount,
+                    createdAt: userData.createdAt,
+                    hasDbData: true
                 };
                 setUser(newUser);
             } catch (error) {
@@ -33,6 +36,8 @@ export function UserProvider({ ssrUser, children }) {
                 const newUser = {
                     ...user,
                     photoUrl: userData.photoUrl,
+                    photoCount: userData.photoCount,
+                    createdAt: userData.createdAt,
                     hasDbData: true
                 };
                 setUser(newUser);
@@ -50,7 +55,7 @@ export function UserProvider({ ssrUser, children }) {
     // memoized to prevent unnecessary re-renders. NB: Ignore the warning in build on dependencies
     const memoizedContext = useMemo(() => {
         return { user, setUser }
-    }, [user.isAuthenticated, user.name, user.email, user.photoUrl, user.hasDbData]);
+    }, [user.isAuthenticated, user.name, user.email, user.photoUrl, user.photoCount, user.createdAt, user.hasDbData]);
 
     return (
         <UserContext.Provider value={memoizedContext}>
