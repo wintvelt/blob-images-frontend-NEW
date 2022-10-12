@@ -92,3 +92,16 @@ This is implemented as follows
     - which checks if there is a toast in the pathname, 
     - and if so, displays the toast
     - so this can be shown on any page
+
+### Personal pages
+The following pages (routes) show a personal header:
+- `/groups`
+- `/photos`
+- `/profile`
+- `/account`
+
+These pages import a `PersonalHeader` component, shown at the top of the page. This component includes
+- User info - from `useUser()`
+- Tab bar with links to the personal pages
+
+The regular page content is shown below the personal header.
