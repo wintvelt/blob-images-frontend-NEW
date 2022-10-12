@@ -22,7 +22,6 @@ The main _app contains a `UserContext` provider, that stores all user info.
 The Context provider also has a client side useEffect, which checks if a user is authenticated. If so, it retrieves user info from the DB. This is done on client side in a useEffect, so only once, to prevent unnecessary API calls to the DB: if it would be done in `getServerSideProps`, next would make a db call on every page visited, even if the user details are already known client-side.
 For the basic auth info, this is not needed, because the user details are passed to the server in the request context.
 
-
 #### Usage
 In the page file
 ``` js
@@ -49,6 +48,16 @@ export async function getServerSideProps(context) {
 For normal pages
 - No need for SSR auth checking, this would unnecessarily slow down load time
 - For the Login button/ User menu, the auth check is done client side - causing rerender if user is logged in
+
+#### Auth pages
+For auth, pages are (all located in root)
+- [x] `login.js`
+- [ ] `completePsw.js`
+- [ ] `forgotPsw.js`
+- [ ] `resetPsw.js`
+- [ ] `signup.js`
+- [ ] `verify.js`
+
 
 ### How nav works
 Every page needs a `getServerSideProps`, 
