@@ -1,4 +1,4 @@
-#New Frontend for Clubalmanac
+# New Frontend for Clubalmanac
 
 Using
 - [x] [NextJs](nextjs.org)
@@ -51,12 +51,38 @@ For normal pages
 
 #### Auth pages
 For auth, pages are (all located in root)
-- [x] `login.js`
-- [ ] `completePsw.js`
-- [ ] `forgotPsw.js`
-- [ ] `resetPsw.js`
-- [ ] `signup.js`
-- [ ] `verify.js`
+- [x] `login.js` - login form
+    - [ ] implement forgotpsw - simple link to forgotpsw page
+- [ ] `forgotPsw.js` - user triggered when they forgot psw, allows user to ask to reset psw
+- [ ] `completePsw.js` - when login results in challenge to set a new password
+- [ ] `resetPsw.js` - to set a new password, follow-up on email to user with verification code
+- [ ] `signup.js` - allows user to sign up
+- [ ] `verify.js` - form to verify user email address, follow-up on mail with verification code
+
+### Invites
+- The invite route has an inviteId.
+    - used in getServerSideProps to fetch the invite from the server (this is a public API)
+- At creation, the invite is addressed to an email. The backend (in api-groups) handles as follows
+    - checks if the invitor is a member of the group + has admin priviliges - otherwise throws error
+    - checks if the group size (env var) would not be exceeded - otherwise, throws error
+    - checks if the invitee email is already a user, and if so
+        - if the invitee is already member of the group, or already has an active invite - throws error
+    - the user id for the invitee will be
+        - userId if the invitee is already user
+        - the email address otherwise
+    - in the db, the invite will be stored as a membership record with invite status
+    - the `inviteId` for the frontend - included in email to invitee - is the encoded PK and SK of the invite record
+- Possible cases for the invite page, based on response from getting invite from DB:
+    - `"invite ID invalid"` or `"invite not found"` -> display error
+    - `"invite not for you"`
+        - if user is logged in: invite is for another user -> do not allow acceptance
+        - if user is not logged in: invite is for an existing user -> prompt to log in
+    - `"invite already accepted"`: invite is already accepted  -> show message
+    - `"invite expired"`: invite expired -> show message
+    - check if invite is for an email, and if so
+        - if user is logged in -> allow acceptance with warning if email address is different
+        - if user is not logged in -> allow signup
+    - otherwise invite must be for this logged in user -> allow acceptance
 
 
 ### How nav works
@@ -81,9 +107,9 @@ export async function getServerSideProps(context) {
 
 ### Links
 In links to protected pages,
-- the default `Link` component 
+- the custom `Link` component 
     - will check - with `isProtectedRoute()` - if the destination is a protected route
-    - you can force by adding a `isProtected={true}` prop
+    - you can force this by adding a `isProtected={true}` prop
 - or you can use the custom `ProtectedLink` component to make it more explicit
 
 This will add a check if user is logged in.

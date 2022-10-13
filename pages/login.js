@@ -13,6 +13,7 @@ import PasswordField from '../src/Components/Forms/PasswordField';
 import { API, Auth } from 'aws-amplify';
 import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
+import { toast } from 'react-toastify';
 
 export default function SignInSide() {
     const { handleSubmit, control, setError, setFocus } = useForm({
@@ -20,13 +21,12 @@ export default function SignInSide() {
             email: '',
         }
     });
-    const { setUser } = useUser();
-    const [ isLoading, setIsLoading ] = React.useState(false);
+    const { user, setUser } = useUser();
+    const [isLoading, setIsLoading] = React.useState(false);
     const router = useRouter();
 
-    // autofocus does not work
+    // because autofocus does not work
     React.useEffect(() => {
-        // TODO: check if user is already logged in, then redirect
         setFocus("email");
     }, [setFocus]);
 
@@ -45,10 +45,17 @@ export default function SignInSide() {
             // redirect after login
             if (router.query.redirectTo) router.push(router.query.redirectTo)
         } catch (error) {
+            if (error.name === 'NotAuthorizedException') {
+                setError('password',
+                { type: 'custom', message: 'Email of wachtwoord is niet correct' }
+                )
+            } else {
+                // TODO: catch other errors, e.g. challenge when email not validated
+                toast.error('Er ging iets mis. Check anders ff bij Wouter')
+            }
             console.log('error signing in', error);
         }
         setIsLoading(false);
-        // setError("password", { type: 'custom', message: 'Ongeldige combinatie van email en password' })
     };
 
     return (
@@ -83,7 +90,7 @@ export default function SignInSide() {
                     <Typography component="h1" variant="h5">
                         Welkom terug!
                     </Typography>
-                    <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
+                    {(!user.isAuthenticated) && <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
                         <EmailField control={control} />
                         <PasswordField control={control} />
                         <Button
@@ -94,11 +101,11 @@ export default function SignInSide() {
                             sx={{ mt: 3, mb: 2 }}
                             disabled={isLoading}
                         >
-                            {isLoading? <CircularProgress size='1.75rem'/> : 'Log in'}
+                            {isLoading ? <CircularProgress size='1.75rem' /> : 'Log in'}
                         </Button>
                         <Grid container>
                             <Grid item xs>
-                                <Link href="#" variant="body2">
+                                <Link href="/forgotpassword" variant="body2">
                                     Wachtwoord vergeten?
                                 </Link>
                             </Grid>
@@ -108,7 +115,16 @@ export default function SignInSide() {
                                 </Link>
                             </Grid>
                         </Grid>
-                    </Box>
+                    </Box>}
+                    {(user.isAuthenticated) && <>
+                        <Typography variant='body' sx={{ padding: '2rem' }}>
+                            Mooi {user.name}, je bent weer ingelogd.
+                            En top dat je hier weer bent vandaag.
+                            Op deze pagina is niet zoveel meer te doen.
+                            Bezoek anders je groepen, of een andere pagina.
+                        </Typography>
+                        <Link href='/groups'>Ga naar mijn groepen</Link>
+                    </>}
                 </Box>
             </Grid>
         </Grid>
