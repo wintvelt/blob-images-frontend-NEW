@@ -25,6 +25,7 @@ export default function AuthWrapper({ children }) {
                     sx={{
                         my: 8,
                         mx: 4,
+                        px: {xs: 0, md: 2, lg: 8},
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',

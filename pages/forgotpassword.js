@@ -50,11 +50,11 @@ export default function SignInSide() {
             <Typography component="h1" variant="h5" gutterBottom>
                 Wachtwoord vergeten?
             </Typography>
-            <Typography variant='body' sx={{ px: '2rem' }}>
-                Vul je email adres in, en ik stuur je een mail waarmee
-                je een nieuw wachtwoord kunt instellen.
-            </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
+                <Typography variant='body' component="p" mb={2}>
+                    Vul je email adres in, en ik stuur je een mail waarmee
+                    je een nieuw wachtwoord kunt instellen.
+                </Typography>
                 <EmailField control={control} />
                 <Button
                     type="submit"
