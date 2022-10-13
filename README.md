@@ -52,8 +52,10 @@ For normal pages
 #### Auth pages
 For auth, pages are (all located in root)
 - [x] `login.js` - login form
-    - [ ] implement forgotpsw - simple link to forgotpsw page
+    - [x] implement forgotpsw - simple link to forgotpsw page
 - [ ] `forgotPsw.js` - user triggered when they forgot psw, allows user to ask to reset psw
+    - [x] extract AuthWrapper - page layout
+    - [ ] new page for forgotPsw.js
 - [ ] `completePsw.js` - when login results in challenge to set a new password
 - [ ] `resetPsw.js` - to set a new password, follow-up on email to user with verification code
 - [ ] `signup.js` - allows user to sign up

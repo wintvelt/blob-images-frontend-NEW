@@ -8,6 +8,24 @@ const UserContext = createContext({
 });
 const initialUser = { isAuthenticated: false, hasDbData: false };
 
+const addDbUser = (user, userData) => {
+    return {
+        ...user,
+        photoUrl: userData.photoUrl,
+        photoCount: userData.photoCount,
+        createdAt: userData.createdAt,
+        hasDbData: true
+    }
+}
+
+export function makeUser(authResult, userData) {
+    return addDbUser({
+        isAuthenticated: true,
+        name: authResult.attributes["custom:name"],
+        email: authResult.attributes.email,
+    }, userData);
+}
+
 export function UserProvider({ ssrUser, children }) {
     const [user, setUser] = useState(ssrUser || initialUser);
 
@@ -16,15 +34,7 @@ export function UserProvider({ ssrUser, children }) {
             try {
                 const authResult = await Auth.currentAuthenticatedUser();
                 const userData = await API.get('blob-images', `/user`);
-                const newUser = {
-                    isAuthenticated: true,
-                    name: authResult.attributes["custom:name"],
-                    email: authResult.attributes.email,
-                    photoUrl: userData.photoUrl,
-                    photoCount: userData.photoCount,
-                    createdAt: userData.createdAt,
-                    hasDbData: true
-                };
+                const newUser = makeUser(authResult, userData);
                 setUser(newUser);
             } catch (error) {
                 console.log(`error getting auth user: "${error}"`)
@@ -33,13 +43,7 @@ export function UserProvider({ ssrUser, children }) {
         const getUserDbData = async () => {
             try {
                 const userData = await API.get('blob-images', `/user`);
-                const newUser = {
-                    ...user,
-                    photoUrl: userData.photoUrl,
-                    photoCount: userData.photoCount,
-                    createdAt: userData.createdAt,
-                    hasDbData: true
-                };
+                const newUser = addDbUser(user, userData);
                 setUser(newUser);
             } catch (error) {
                 console.log(`error getting auth user: "${error}"`)
