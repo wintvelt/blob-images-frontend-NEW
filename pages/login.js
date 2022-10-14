@@ -86,7 +86,7 @@ export default function SignInSide() {
                         </Link>
                     </Grid>
                     <Grid item>
-                        <Link href="#" variant="body2">
+                        <Link href="/" variant="body2">
                             Aanmelden als feut
                         </Link>
                     </Grid>

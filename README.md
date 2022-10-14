@@ -59,6 +59,9 @@ For auth, pages are (all located in root)
     - [x] new page for forgotPsw.js
     - [ ] redirect to setpassword
 - [ ] `setpassword.js` - to set a new password, follow-up on email to user with verification code
+    - [ ] new page
+    - [ ] create NewPassWordField - with nice validation lines
+    - [ ] create ValidationCodeField
 - [ ] `choosepassword.js` - when login results in challenge to set a new password - use tmp psw to set new
 - [ ] `signup.js` - allows user to sign up
 - [ ] `verify.js` - form to verify user email address, follow-up on mail with verification code
