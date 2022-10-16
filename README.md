@@ -64,10 +64,14 @@ For auth, pages are (all located in root)
     - [ ] create ValidationCodeField
 - [ ] `choosepassword.js` - when login results in challenge to set a new password - use tmp psw to set new
 - [ ] `signup.js` - allows user to sign up
+    - the url should contain a query parameter `inviteid`
+        - this is passed to cognito on signup
+        - the cognito backend preSignup lambda verifies the inviteId (unless env vars allow direct signup)
+    - after signup user is redirected to the verify page
 - [ ] `verify.js` - form to verify user email address, follow-up on mail with verification code
 
 ### Invites
-- The invite route has an inviteId.
+- The invite route has an `inviteId`.
     - used in getServerSideProps to fetch the invite from the server (this is a public API)
 - At creation, the invite is addressed to an email. The backend (in api-groups) handles as follows
     - checks if the invitor is a member of the group + has admin priviliges - otherwise throws error
