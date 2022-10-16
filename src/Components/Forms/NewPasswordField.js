@@ -16,13 +16,14 @@ const validate = {
     minLength: (psw) => (psw && psw.length >= 8)
 }
 
-const PasswordHelper = ({ valId, helperText, value, errors }) => {
+const PasswordHelper = ({ valId, helperText, value, errors, last = false }) => {
     const isValid = validate[valId](value);
     const isError = (!!errors.newPassword && !isValid)
-    const textStyle = { 
+    let textStyle = {
         mt: 0,
-        color: (isValid) ? t => t.palette.success.main : 'inherit' 
+        color: (isValid) ? t => t.palette.success.main : 'inherit'
     }
+    if (last) textStyle = { ...textStyle, mb: 1 }
     return <FormHelperText error={isError} sx={textStyle}>
         {helperText}
         {isValid && ' ✓'}
@@ -85,7 +86,7 @@ function NewPasswordField({ control }) {
             <PasswordHelper valId='minNumber' value={value} errors={errors}
                 helperText='minstens 1 cijfer' />
             <PasswordHelper valId='minLength' value={value} errors={errors}
-                helperText='minimaal 8 tekens, voor de zekerheid' />
+                helperText='minimaal 8 tekens, voor de zekerheid' last={true} />
         </FormControl>
     );
 }

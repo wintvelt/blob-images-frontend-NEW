@@ -14,6 +14,8 @@ import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
 import AuthWrapper from '../src/Components/Forms/AuthWrapper';
+import LoginForm from '../src/Components/Forms/LoginForm';
+import CreateAccountForm from '../src/Components/Forms/CreateAccountForm';
 
 export default function SignInSide() {
     const { handleSubmit, control, setError, setFocus } = useForm({
@@ -21,93 +23,23 @@ export default function SignInSide() {
             email: '',
         }
     });
-    const { user, setUser } = useUser();
-    const [isLoading, setIsLoading] = React.useState(false);
+    const [accountInCreation, setAccountInCreation] = React.useState({
+        email: null, tmpPassword: null
+    });
     const router = useRouter();
 
-    // because autofocus does not work
-    React.useEffect(() => {
-        setFocus("email");
-    }, [setFocus]);
-
-    const onSubmit = async data => {
-        try {
-            setIsLoading(true);
-            const authResult = await Auth.signIn(data.email, data.password);
-            if (authResult.challengeName === 'NEW_PASSWORD_REQUIRED') {
-                // redirect to choosepassword.js, preserving redirect
-                let destination = '/completepassword';
-                if (router.query.redirectTo) destination += `?redirectTo=${encodeURI(router.query.redirectTo)}`;
-                router.push(destination, '/createaccount');
-            } else {
-                const userData = await API.get('blob-images', `/user`);
-                const newUser = makeUser(authResult, userData);
-                setUser(newUser);
-                // redirect after login
-                if (router.query.redirectTo) router.push(router.query.redirectTo)
-            }
-        } catch (error) {
-            switch (error.message) {
-                case 'Incorrect username or password.':
-                    setError('password',
-                        { type: 'custom', message: 'Email of wachtwoord is niet correct' });
-                    break;
-                case 'Password attempts exceeded':
-                    toast.error('Je account is voor 15 minuten geblokkeerd - je kunt het later weer proberen');
-                    break;
-                // TODO: catch other errors, e.g. challenge when email not validated
-                default:
-                    toast.error('Er ging iets mis. Check anders ff bij Wouter');
-                    break;
-            }
-            console.log(error.message)
-        }
-        setIsLoading(false);
-    };
+    const onCreateAccount = (tmpUser) => {
+        setAccountInCreation(tmpUser)
+    }
 
     return (
         <AuthWrapper>
-            <Avatar sx={{ m: 1, bgcolor: (t) => t.palette.grey[300] }}>
-                👋
-            </Avatar>
-            <Typography component="h1" variant="h5">
-                Welkom terug!
-            </Typography>
-            {(!user.isAuthenticated) && <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
-                <EmailField control={control} />
-                <PasswordField control={control} />
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="secondary"
-                    sx={{ mt: 3, mb: 2 }}
-                    disabled={isLoading}
-                >
-                    {isLoading ? <CircularProgress size='1.75rem' /> : 'Log in'}
-                </Button>
-                <Grid container>
-                    <Grid item xs>
-                        <Link href="/forgotpassword" variant="body2">
-                            Wachtwoord vergeten?
-                        </Link>
-                    </Grid>
-                    <Grid item>
-                        <Link href="/" variant="body2">
-                            Aanmelden als feut
-                        </Link>
-                    </Grid>
-                </Grid>
-            </Box>}
-            {(user.isAuthenticated) && <>
-                <Typography variant='body' sx={{ padding: '2rem' }}>
-                    Mooi {user.name}, je bent weer ingelogd.
-                    En top dat je hier weer bent vandaag.
-                    Op deze pagina is niet zoveel meer te doen.
-                    Bezoek anders je groepen, of een andere pagina.
-                </Typography>
-                <Link href='/groups'>Ga naar mijn groepen</Link>
-            </>}
+            {(!accountInCreation.email) && <LoginForm onCreateAccount={onCreateAccount} />}
+            {(accountInCreation.email) &&
+                <CreateAccountForm
+                    onCreateAccount={onCreateAccount}
+                    accountInCreation={accountInCreation}
+                />}
         </AuthWrapper>
     );
 }

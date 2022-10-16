@@ -28,10 +28,11 @@ function OptinField({ control }) {
         "Om lid te worden moet je akkoord geven"
         : " ";
 
+    const color = (errors.optin) ? t => t.palette.error.main : 'default'
     return (
         <>
             <FormControlLabel
-                control={<Checkbox size='small' />}
+                control={<Checkbox size='small' sx={{ color }} />}
                 label={<Label />}
                 onChange={onChange} // send value to hook form 
                 onBlur={onBlur} // notify when input is touched/blur

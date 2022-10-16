@@ -1,61 +1,61 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Link from '../src/Link';
+import Link from '../../Link';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { useForm } from "react-hook-form";
-import { Auth } from 'aws-amplify';
+import NameField from './NameField';
+import NewPasswordField from './NewPasswordField';
+import OptinField from './OptinField';
+import { makeUser, useUser } from '../UserContext';
+import { API, Auth } from 'aws-amplify';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
+import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
-import AuthWrapper from '../src/Components/Forms/AuthWrapper';
-import NewPasswordField from '../src/Components/Forms/NewPasswordField';
-import PasswordField from '../src/Components/Forms/PasswordField';
-import EmailField from '../src/Components/Forms/EmailField';
-import NameField from '../src/Components/Forms/NameField';
-import OptinField from '../src/Components/Forms/OptinField';
 
-export default function CreateAccount() {
+export default function CreateAccountForm({ onCreateAccount, accountInCreation }) {
     const { handleSubmit, control, setError, setFocus } = useForm({
         defaultValues: {
-            email: '',
             name: '',
-            tmpPassword: '',
             newPassword: '',
             optin: false
         }
     });
+    const { email, tmpPassword } = accountInCreation;
     const [isLoading, setIsLoading] = React.useState(false);
+    const router = useRouter();
 
     // because autofocus does not work
     React.useEffect(() => {
-        setFocus("tmpPassword");
+        setFocus("name");
     }, [setFocus]);
 
     const onSubmit = async data => {
+        setIsLoading(true);
         try {
-            setIsLoading(true);
-            toast.info('TODO');
+            const authResult = await Auth.completePassword(email, data.name, tmpPassword, data.newPassword);
+            setIsLoading(false);
         } catch (error) {
-            toast.error('Er ging iets mis. Check anders ff bij Wouter');
-            console.log(error.message)
+            toast.error(error)
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
 
     return (
-        <AuthWrapper>
+        <>
             <Avatar sx={{ m: 1, bgcolor: (t) => t.palette.grey[300] }}>
                 🥳
             </Avatar>
             <Typography component="h1" variant="h5" gutterBottom>
                 Account aanmaken
             </Typography>
+            <Typography variant='body'>
+                Vul je gegevens aan en kies een wachtwoord om een account aan te maken.
+            </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
-                <EmailField control={control} />
                 <NameField control={control} />
-                <PasswordField control={control} isTmp={true} />
                 <NewPasswordField control={control} />
                 <OptinField control={control} />
                 <Button
@@ -70,17 +70,12 @@ export default function CreateAccount() {
                 </Button>
                 <Grid container>
                     <Grid item xs>
-                        <Link href="/login" variant="body2">
-                            Toch inloggen
-                        </Link>
-                    </Grid>
-                    <Grid item>
-                        <Link href="/" variant="body2">
-                            Aanmelden als feut
-                        </Link>
+                        <Button onClick={() => onCreateAccount({ email: null })} size='small'>
+                            Inloggen in ander account
+                        </Button>
                     </Grid>
                 </Grid>
             </Box>
-        </AuthWrapper>
+        </>
     );
 }
