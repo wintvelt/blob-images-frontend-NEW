@@ -53,7 +53,9 @@ For normal pages
 For auth, pages are (all located in root)
 - [ ] `login.js` - login form
     - [x] implement forgotpsw - simple link to forgotpsw page
-    - [ ] catch Authchallenge
+    - [x] catch Authchallenge
+- [ ] `createaccount.js` - when login results in challenge to set a new password - use tmp psw to set new
+    - [ ] rework to follow up from on login page with TMP password
 - [ ] `forgotpassword.js` - user triggered when they forgot psw, allows user to ask to reset psw
     - [x] extract AuthWrapper - page layout
     - [x] new page for forgotPsw.js
@@ -62,7 +64,6 @@ For auth, pages are (all located in root)
     - [ ] new page
     - [ ] create NewPassWordField - with nice validation lines
     - [ ] create ValidationCodeField
-- [ ] `choosepassword.js` - when login results in challenge to set a new password - use tmp psw to set new
 - [ ] `signup.js` - allows user to sign up
     - the url should contain a query parameter `inviteid`
         - this is passed to cognito on signup

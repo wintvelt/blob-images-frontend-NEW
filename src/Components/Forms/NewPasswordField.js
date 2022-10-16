@@ -9,34 +9,47 @@ import InputLabel from '@mui/material/InputLabel';
 import FormHelperText from '@mui/material/FormHelperText';
 import { useState } from 'react';
 
-function PasswordField({ control, isTmp = false }) {
+const validate = {
+    minUpperCase: (psw) => (psw && psw !== psw.toLowerCase()),
+    minLowerCase: (psw) => (psw && psw !== psw.toUpperCase()),
+    minNumber: (psw) => (psw && /\d/.test(psw)),
+    minLength: (psw) => (psw && psw.length >= 8)
+}
+
+const PasswordHelper = ({ valId, helperText, value, errors }) => {
+    const isValid = validate[valId](value);
+    const isError = (!!errors.newPassword && !isValid)
+    const textStyle = { 
+        mt: 0,
+        color: (isValid) ? t => t.palette.success.main : 'inherit' 
+    }
+    return <FormHelperText error={isError} sx={textStyle}>
+        {helperText}
+        {isValid && ' ✓'}
+    </FormHelperText>
+}
+
+function NewPasswordField({ control }) {
     const {
         field: { onChange, onBlur, name, value, ref },
         fieldState: { invalid, isTouched, isDirty },
         formState: { errors }
     } = useController({
-        name: (isTmp) ? "tmpPassword" : "password",
+        name: "newPassword",
         control,
-        rules: { required: true },
+        rules: { validate },
         defaultValue: "",
     });
     const [visible, setVisible] = useState(false);
-    const onClickVisibility = () => setVisible(!visible)
-
-    const helperText = (errors[name]) ?
-        (errors[name].type === 'required') ?
-            (isTmp) ? "Vul het tijdelijk wachtwoord in dat je hebt ontvangen" : "Vul je wachtwoord in"
-            // errors.password.type === 'custom'
-            : errors[name].message
-        : " ";
+    const onClickVisibility = () => setVisible(!visible);
 
     return (
         <FormControl variant='outlined' fullWidth margin="dense">
             <InputLabel
                 htmlFor="outlined-adornment-password"
-                error={(!!errors[name])}
+                error={(!!errors.newPassword)}
             >
-                {(isTmp) ? 'Tijdelijk wachtwoord *' : 'Wachtwoord *'}
+                Nieuw wachtwoord *
             </InputLabel>
             <OutlinedInput
                 type={(visible) ? "text" : "password"}
@@ -45,13 +58,13 @@ function PasswordField({ control, isTmp = false }) {
                 value={value} // input value
                 name={name} // send down the input name
                 inputRef={ref} // send input ref, so we can focus on input when error appear
-                error={!!(errors[name])}
+                error={!!(errors.newPassword)}
                 // margin="normal"
                 required
                 fullWidth
-                id={(isTmp) ? "tmp-password" : "password"}
-                label={(isTmp) ? 'Tijdelijk wachtwoord *' : 'Wachtwoord *'}
-                autoComplete={(isTmp) ? "tmp-password" : "password"}
+                id="new-password"
+                label="Nieuw wachtwoord *"
+                autoComplete="new-password"
                 endAdornment={
                     <InputAdornment position="end">
                         <IconButton
@@ -65,9 +78,16 @@ function PasswordField({ control, isTmp = false }) {
                     </InputAdornment>
                 }
             />
-            <FormHelperText error={!!(errors[name])}>{helperText}</FormHelperText>
+            <PasswordHelper valId='minUpperCase' value={value} errors={errors}
+                helperText='minstens 1 hoofdletter' />
+            <PasswordHelper valId='minLowerCase' value={value} errors={errors}
+                helperText='minstens 1 kleine letter' />
+            <PasswordHelper valId='minNumber' value={value} errors={errors}
+                helperText='minstens 1 cijfer' />
+            <PasswordHelper valId='minLength' value={value} errors={errors}
+                helperText='minimaal 8 tekens, voor de zekerheid' />
         </FormControl>
     );
 }
 
-export default PasswordField;
+export default NewPasswordField;

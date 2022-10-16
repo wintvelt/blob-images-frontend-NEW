@@ -5,7 +5,7 @@ import Grid from '@mui/material/Grid';
 
 export default function AuthWrapper({ children }) {
     return (
-        <Grid container component="main" sx={{ height: 'calc(100vh - 64px)' }}>
+        <Grid container component="main" sx={{ minHeight: 'calc(100vh - 64px)' }}>
             <Grid
                 item
                 xs={false}

@@ -34,11 +34,18 @@ export default function SignInSide() {
         try {
             setIsLoading(true);
             const authResult = await Auth.signIn(data.email, data.password);
-            const userData = await API.get('blob-images', `/user`);
-            const newUser = makeUser(authResult, userData);
-            setUser(newUser);
-            // redirect after login
-            if (router.query.redirectTo) router.push(router.query.redirectTo)
+            if (authResult.challengeName === 'NEW_PASSWORD_REQUIRED') {
+                // redirect to choosepassword.js, preserving redirect
+                let destination = '/completepassword';
+                if (router.query.redirectTo) destination += `?redirectTo=${encodeURI(router.query.redirectTo)}`;
+                router.push(destination, '/createaccount');
+            } else {
+                const userData = await API.get('blob-images', `/user`);
+                const newUser = makeUser(authResult, userData);
+                setUser(newUser);
+                // redirect after login
+                if (router.query.redirectTo) router.push(router.query.redirectTo)
+            }
         } catch (error) {
             switch (error.message) {
                 case 'Incorrect username or password.':
