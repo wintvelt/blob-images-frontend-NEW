@@ -3,7 +3,7 @@ import AuthWrapper from '../src/Components/Forms/AuthWrapper';
 import LoginForm from '../src/Components/Forms/LoginForm';
 import CreateAccountForm from '../src/Components/Forms/CreateAccountForm';
 
-export default function SignInSide() {
+export default function Login() {
     const [accountInCreation, setAccountInCreation] = React.useState({
         email: null, tmpPassword: null
     });

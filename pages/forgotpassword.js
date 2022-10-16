@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography';
 import { toast } from 'react-toastify';
 import AuthWrapper from '../src/Components/Forms/AuthWrapper';
 
-export default function SignInSide() {
+export default function ForgotPassword() {
     const { handleSubmit, control, setError, setFocus } = useForm({
         defaultValues: {
             email: '',
