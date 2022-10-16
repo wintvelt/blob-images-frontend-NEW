@@ -61,7 +61,7 @@ For auth, pages are (all located in root)
     - [ ] redirect to setpassword
 - [ ] `setpassword.js` - to set a new password, follow-up on email to user with verification code
     - [ ] new page
-    - [ ] create NewPassWordField - with nice validation lines
+    - [x] create NewPassWordField - with nice validation lines
     - [ ] create ValidationCodeField
 - [ ] `signup.js` - allows user to sign up
     - the url should contain a query parameter `inviteid`
