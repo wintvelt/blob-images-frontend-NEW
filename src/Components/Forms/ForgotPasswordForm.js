@@ -12,9 +12,9 @@ import Typography from '@mui/material/Typography';
 import { toast } from 'react-toastify';
 
 export default function ForgotPasswordForm(props) {
-    const { handleSubmit, control, setError, setFocus } = useForm({
+    const { handleSubmit, control, getValues, setFocus } = useForm({
         defaultValues: {
-            email: props.email || '',
+            email: props.emailState?.email || '',
         }
     });
     const [isLoading, setIsLoading] = React.useState(false);
@@ -29,7 +29,10 @@ export default function ForgotPasswordForm(props) {
             setIsLoading(true);
             await Auth.forgotPassword(data.email);
             toast.info('Email verstuurd - check je mailbox');
-            props.setEmail(data.email);
+            props.setEmailState({
+                hasEmail: true,
+                email: data.email
+            });
         } catch (error) {
             const isLimitExceeded = (error.message && error.message.includes('Attempt limit exceeded'))
             const msg = (isLimitExceeded) ?
@@ -39,6 +42,14 @@ export default function ForgotPasswordForm(props) {
             console.log(error.message)
             setIsLoading(false);
         }
+    };
+
+    const onHasCode = () => {
+        const data = getValues();
+        props.setEmailState({
+            hasEmail: true,
+            email: data.email || ''
+        })
     };
 
     return (
@@ -67,9 +78,9 @@ export default function ForgotPasswordForm(props) {
                 </Button>
                 <Grid container>
                     <Grid item xs>
-                        <Link href="/login" variant="body2">
-                            Toch inloggen
-                        </Link>
+                        <Button onClick={onHasCode} size="small">
+                            Ik heb code
+                        </Button>
                     </Grid>
                     <Grid item>
                         <Link href="/" variant="body2">
