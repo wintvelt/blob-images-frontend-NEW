@@ -68,7 +68,7 @@ For auth, pages are (all located in root)
     - [x] test various scenarios
     - [x] it should be possible to navigate from scratch to page with verification code
 - [ ] `signup.js` - allows user to sign up
-    - the url should contain a query parameter `inviteid`
+    - the url should contain a query parameter `inviteid`, unless direct signup is allowed
         - this is passed to cognito on signup
         - the cognito backend preSignup lambda verifies the inviteId (unless env vars allow direct signup)
     - after signup user is redirected to the verify page

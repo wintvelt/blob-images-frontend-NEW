@@ -79,7 +79,7 @@ export default function ForgotPasswordForm(props) {
                 <Grid container>
                     <Grid item xs>
                         <Button onClick={onHasCode} size="small">
-                            Ik heb code
+                            Ik heb al een code
                         </Button>
                     </Grid>
                     <Grid item>
