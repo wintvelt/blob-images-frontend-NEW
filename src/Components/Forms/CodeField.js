@@ -14,8 +14,10 @@ function CodeField({ control }) {
     });
 
     const helperText = (errors.code) ?
-        // (errors.name.type === 'required') ?
-        "Vul de verificatiecode uit de email in"
+        (errors.code.type === 'required') ?
+            "Vul de verificatiecode uit de email in"
+            // otherwise, it is custom and should have message
+            : errors.code.message
         : " ";
 
     return (

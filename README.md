@@ -55,16 +55,11 @@ For auth, pages are (all located in root)
     - [x] implement forgotpsw - simple link to forgotpsw page
     - [x] has createaccount form, to complete account after login with tmp password
     - [ ] catch other challenges and errors
-- [ ] `forgotpassword.js` - user triggered when they forgot psw, allows user to ask to reset psw
+- [x] `forgotpassword.js` - user triggered when they forgot psw, allows user to ask to reset psw
     - [x] extract AuthWrapper - page layout
     - [x] new page for forgotPsw.js
     - [x] setpassword is implemented on same page
-    - [ ] test various scenarios
-- [ ] `setpassword.js` - to set a new password, follow-up on email to user with verification code
-    - [ ] new page
-    - [x] create NewPassWordField - with nice validation lines
-    - [ ] create verification code field
-    - [ ] extract verfication code server side from query
+    - [x] test various scenarios
 - [ ] `signup.js` - allows user to sign up
     - the url should contain a query parameter `inviteid`
         - this is passed to cognito on signup

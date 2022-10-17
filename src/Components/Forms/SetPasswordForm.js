@@ -13,7 +13,7 @@ import NewPasswordField from './NewPasswordField';
 import { useRouter } from 'next/router';
 
 export default function SetPasswordForm({ email, code }) {
-    const { handleSubmit, control, trigger, setFocus } = useForm({
+    const { handleSubmit, control, trigger, getValues, setError, setFocus } = useForm({
         defaultValues: {
             email: email || '',
             code: code || '',
@@ -37,10 +37,24 @@ export default function SetPasswordForm({ email, code }) {
             setIsLoading(true);
             await Auth.forgotPasswordSubmit(email, code, newPassword);
             await Auth.signIn(email, newPassword);
-            // router.push('/');
+            router.push('/');
         } catch (error) {
-            toast.error('Er ging iets mis. Check anders ff bij Wouter');
             console.log(error.message)
+            const isInvalidCode = (error.message && error.message.includes('Invalid verification code'))
+            const isLimitExceeded = (error.message && error.message.includes('limit exceeded'))
+            if (isInvalidCode || isLimitExceeded) {
+                const message = (isInvalidCode) ?
+                    'ongeldige code, check je inbox of vraag opnieuw aan'
+                    : 'te veel pogingen, probeer het later nog eens';
+                setError(
+                    'code',
+                    { type: 'invalidCode', message },
+                    { shouldFocus: isInvalidCode }
+                );
+            } else {
+                console.log(error.message)
+                toast.error('Er ging iets mis. Check anders ff bij Wouter');
+            }
             setIsLoading(false);
         }
     };
@@ -48,8 +62,11 @@ export default function SetPasswordForm({ email, code }) {
     const onRetry = async () => {
         try {
             const result = await trigger('email');
-            if (result) await Auth.forgotPassword(data.email);
-            toast.info('Email verstuurd, check je mailbox');
+            if (result) {
+                const data = getValues();
+                await Auth.forgotPassword(data.email);
+                toast.info('Email verstuurd, check je inbox');
+            }
         } catch (error) {
             console.log(error)
         }
@@ -75,7 +92,7 @@ export default function SetPasswordForm({ email, code }) {
                     sx={{ mt: 3, mb: 2 }}
                     disabled={isLoading}
                 >
-                    {isLoading ? <CircularProgress size='1.75rem' /> : 'Verstuur'}
+                    {isLoading ? <CircularProgress size='1.75rem' /> : 'Opslaan'}
                 </Button>
             </Box>
             <Button onClick={onRetry} size="small">

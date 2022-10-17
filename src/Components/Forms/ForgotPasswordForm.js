@@ -31,7 +31,11 @@ export default function ForgotPasswordForm(props) {
             toast.info('Email verstuurd - check je mailbox');
             props.setEmail(data.email);
         } catch (error) {
-            toast.error('Er ging iets mis. Check anders ff bij Wouter');
+            const isLimitExceeded = (error.message && error.message.includes('Attempt limit exceeded'))
+            const msg = (isLimitExceeded) ?
+                'Te veel pogingen, probeer het later nog eens'
+                : 'Er ging iets mis. Check anders ff bij Wouter';
+            toast.error(msg);
             console.log(error.message)
             setIsLoading(false);
         }
