@@ -62,7 +62,8 @@ For auth, pages are (all located in root)
 - [ ] `setpassword.js` - to set a new password, follow-up on email to user with verification code
     - [ ] new page
     - [x] create NewPassWordField - with nice validation lines
-    - [ ] create ValidationCodeField
+    - [ ] create verification code field
+    - [ ] extract verfication code server side from query
 - [ ] `signup.js` - allows user to sign up
     - the url should contain a query parameter `inviteid`
         - this is passed to cognito on signup
