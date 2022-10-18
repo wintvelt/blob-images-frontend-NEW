@@ -95,7 +95,7 @@ export default function SetPasswordForm({ email, code }) {
                     {isLoading ? <CircularProgress size='1.75rem' /> : 'Opslaan'}
                 </Button>
             </Box>
-            <Button onClick={onRetry} size="small">
+            <Button onClick={onRetry} size="small" fullWidth variant='outlined'>
                 Mail mij een nieuwe code
             </Button>
         </>
