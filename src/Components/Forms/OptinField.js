@@ -2,7 +2,7 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import { useController } from "react-hook-form";
 import { FormHelperText, Typography } from '@mui/material';
-import Link from '../../Link';
+import Link from '../Link';
 
 const Label = () => (
     <Typography variant='body2'>

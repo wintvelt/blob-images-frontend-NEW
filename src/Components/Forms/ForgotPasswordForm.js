@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Link from '../../Link';
+import Link from '../Link';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { useForm } from "react-hook-form";

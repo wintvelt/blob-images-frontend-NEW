@@ -5,9 +5,9 @@ import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import MuiLink from '@mui/material/Link';
 import { styled } from '@mui/material/styles';
-import { useUser } from './Components/UserContext';
+import { useUser } from './UserContext';
 import { toast } from 'react-toastify';
-import { isProtectedRoute } from './utils/route-helper';
+import { isProtectedRoute } from '../utils/route-helper';
 
 // Add support for the sx prop for consistency with the other branches.
 const Anchor = styled('a')({});

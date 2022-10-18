@@ -9,7 +9,7 @@ import NavBarLeft from './NavBar-Left';
 import NavBarLogin from './NavBar-Login';
 import Image from 'next/image';
 import ClubLogo from "../../../public/ca_icon_dark_sm.png";
-import Link from '../../Link';
+import Link from '../Link';
 
 function HideOnScroll(props) {
     const { children } = props;

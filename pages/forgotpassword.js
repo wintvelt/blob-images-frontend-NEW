@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 import AuthWrapper from '../src/Components/Forms/AuthWrapper';
 import ForgotPasswordForm from '../src/Components/Forms/ForgotPassWordForm';
 import SetPasswordForm from '../src/Components/Forms/SetPasswordForm';
-import Link from '../src/Link';
+import Link from '../src/Components/Link';
 
 /* This page has 3 states
     - codeRequest: user can fill in email and request code <ForgotPassWordForm/>

@@ -2,7 +2,7 @@ import ClubLogo from "../../../public/ca_icon_dark_sm.png";
 import ClubWord from "../../../public/ca_wordmark_sm.png";
 import IconButton from "@mui/material/IconButton";
 import Image from "next/image";
-import Link from "../../Link";
+import Link from "../Link";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 import Typography from "@mui/material/Typography";
 import { API } from "aws-amplify";

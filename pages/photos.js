@@ -3,7 +3,7 @@ import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ProTip from '../src/ProTip';
-import Link from '../src/Link';
+import Link from '../src/Components/Link';
 import { getSSRUser, Protected } from '../src/Components/Protected';
 import { getSSRRoute } from '../src/utils/route-helper';
 import PersonalHeader from '../src/Components/PersonalHeader';
