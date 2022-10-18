@@ -67,7 +67,7 @@ For auth, pages are (all located in root)
     - [x] setpassword is implemented on same page
     - [x] test various scenarios
     - [x] it should be possible to navigate from scratch to page with verification code
-    - [ ] after verification, a success message is shown, with link to go to groups page
+    - [x] after verification, a success message is shown, with link to go to groups page
 - [ ] `signup.js` - allows user to sign up
     - the url should contain a query parameter `inviteid`, unless direct signup is allowed
         - this is passed to cognito on signup

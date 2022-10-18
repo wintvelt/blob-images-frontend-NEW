@@ -42,7 +42,8 @@ function UserMenu() {
     };
     return <>
         <Button
-            id="basic-button"
+            id="usermenu-button"
+            data-cy="usermenu-button"
             aria-controls={open ? 'basic-menu' : undefined}
             aria-haspopup="true"
             aria-expanded={open ? 'true' : undefined}
@@ -57,7 +58,8 @@ function UserMenu() {
             {name}
         </Button>
         <Menu
-            id="basic-menu"
+            id="usermenu-menu"
+            data-cy="usermenu-menu"
             anchorEl={anchorEl}
             open={open}
             onClose={handleClose}
@@ -67,7 +69,7 @@ function UserMenu() {
         >
             <MenuItem onClick={handleClose}>Profile</MenuItem>
             <MenuItem onClick={handleClose}>My account</MenuItem>
-            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+            <MenuItem onClick={handleLogout} data-cy='usermenu-logout'>Logout</MenuItem>
         </Menu>
     </>
 }

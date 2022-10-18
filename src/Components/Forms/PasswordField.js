@@ -50,6 +50,7 @@ function PasswordField({ control, isTmp = false }) {
                 required
                 fullWidth
                 id={(isTmp) ? "tmp-password" : "password"}
+                data-cy={(isTmp) ? "tmp-password" : "password"}
                 label={(isTmp) ? 'Tijdelijk wachtwoord *' : 'Wachtwoord *'}
                 autoComplete={(isTmp) ? "tmp-password" : "password"}
                 endAdornment={

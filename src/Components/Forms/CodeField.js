@@ -34,6 +34,7 @@ function CodeField({ control }) {
             required
             fullWidth
             id="code"
+            data-cy="code"
             label="Verificatiecode"
             autoComplete="off"
         />

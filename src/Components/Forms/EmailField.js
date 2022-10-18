@@ -35,6 +35,7 @@ function EmailField({ control }) {
             required
             fullWidth
             id="email"
+            data-cy="email"
             label="Email adres"
             autoComplete="email"
         />

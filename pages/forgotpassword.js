@@ -22,8 +22,7 @@ import Link from '../src/Components/Link';
 */
 export default function ForgotPassword(props) {
     const [pageState, setPageState] = React.useState({
-        // show: (props.email) ? 'verifyCode' : 'codeRequest',
-        show: 'success',
+        show: (props.email) ? 'verifyCode' : 'codeRequest',
         email: props.email || '' // null from server if empty, so convert to string
     });
 

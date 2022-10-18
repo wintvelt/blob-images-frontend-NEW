@@ -32,6 +32,7 @@ function NameField({ control }) {
             required
             fullWidth
             id="name"
+            data-cy="name"
             label="Naam"
             autoComplete="name"
         />

@@ -73,7 +73,7 @@ export default function LoginForm({ onCreateAccount }) {
                 👋
             </Avatar>
             <Typography component="h1" variant="h5">
-                Welkom terug!
+                {(user.isAuthenticated) ? `Hi ${user.name || 'lid'}!` : 'Welkom terug!'}
             </Typography>
             {(!user.isAuthenticated) && <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
                 <EmailField control={control} />
@@ -85,12 +85,13 @@ export default function LoginForm({ onCreateAccount }) {
                     color="secondary"
                     sx={{ mt: 3, mb: 2 }}
                     disabled={isLoading}
+                    data-cy='submit'
                 >
                     {isLoading ? <CircularProgress size='1.75rem' /> : 'Log in'}
                 </Button>
                 <Grid container>
                     <Grid item xs>
-                        <Link href="/forgotpassword" variant="body2">
+                        <Link href="/forgotpassword" variant="body2" data-cy='forgot password link'>
                             Wachtwoord vergeten?
                         </Link>
                     </Grid>
@@ -102,13 +103,15 @@ export default function LoginForm({ onCreateAccount }) {
                 </Grid>
             </Box>}
             {(user.isAuthenticated) && <>
-                <Typography variant='body' sx={{ padding: '2rem' }}>
+                <Typography variant='body' sx={{ mx: '2rem', mt: '2rem' }}>
                     Mooi {user.name}, je bent weer ingelogd.
                     En top dat je hier weer bent vandaag.
+                </Typography>
+                <Typography variant='body' sx={{ mx: '2rem', my: '1rem' }}>
                     Op deze pagina is niet zoveel meer te doen.
                     Bezoek anders je groepen, of een andere pagina.
                 </Typography>
-                <Link href='/groups'>Ga naar mijn groepen</Link>
+                <Link href='/groups'>→ Ga naar mijn groepen</Link>
             </>}
         </>
     );

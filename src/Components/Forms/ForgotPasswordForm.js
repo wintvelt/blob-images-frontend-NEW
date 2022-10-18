@@ -68,6 +68,7 @@ export default function ForgotPasswordForm(props) {
                 <EmailField control={control} />
                 <Button
                     type="submit"
+                    data-cy="submit"
                     fullWidth
                     variant="contained"
                     color="secondary"
@@ -77,7 +78,7 @@ export default function ForgotPasswordForm(props) {
                     {isLoading ? <CircularProgress size='1.75rem' /> : 'Verstuur'}
                 </Button>
             </Box>
-            <Button onClick={onHasCode} size="small" fullWidth variant='outlined'>
+            <Button data-cy="has code" onClick={onHasCode} size="small" fullWidth variant='outlined'>
                 Ik heb al een code
             </Button>
         </>

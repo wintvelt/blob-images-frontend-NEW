@@ -64,6 +64,7 @@ function NewPasswordField({ control }) {
                 required
                 fullWidth
                 id="new-password"
+                data-cy="new-password"
                 label="Nieuw wachtwoord *"
                 autoComplete="new-password"
                 endAdornment={

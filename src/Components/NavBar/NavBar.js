@@ -30,7 +30,7 @@ const flexGrow = { flexGrow: 1 }
 const middlePos = { position: 'absolute', left: 'calc(50% - 16px)', top: 'calc(50% - 16px)' }
 
 function NavBar(props) {
-    const isChildPath = (props.backRoute !== '/')
+    const isChildPath = (props.backRoute && props.backRoute !== '/')
     return (
         <HideOnScroll {...props}>
             <AppBar>

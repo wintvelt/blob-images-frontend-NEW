@@ -17,9 +17,8 @@ export const getSSRRoute = (context) => {
 
 // used to identify protected route
 // for intercepting links
-// for redirecting to home on logout
+// for redirecting to home on logout - in NavBar-UserMenu component
 export const isProtectedRoute = (pathname = '/') => {
-    return pathname.includes('/groups/')
-        || pathname.includes('/albums/')
-        || pathname.includes('/about')
+    return pathname.indexOf('/groups') === 0
+        || pathname.indexOf('/albums') === 0
 }

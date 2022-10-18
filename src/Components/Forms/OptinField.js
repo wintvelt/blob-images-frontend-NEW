@@ -42,6 +42,7 @@ function OptinField({ control }) {
                 margin="dense"
                 required
                 id="optin"
+                data-cy="optin"
                 autoComplete="off"
             />
             <FormHelperText error={!!(errors[name])}>{helperText}</FormHelperText>

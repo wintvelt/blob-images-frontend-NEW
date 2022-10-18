@@ -16,7 +16,7 @@ export default function NavBarLogin(props) {
     }
 
     if (router.pathname.includes('login')) return <></>;
-    return <Button variant="contained" color="secondary" onClick={login}>
+    return <Button variant="contained" color="secondary" onClick={login} data-cy='nav-login'>
         Log in
     </Button>
 
