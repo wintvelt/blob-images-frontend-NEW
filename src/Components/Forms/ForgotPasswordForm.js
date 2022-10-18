@@ -76,19 +76,10 @@ export default function ForgotPasswordForm(props) {
                 >
                     {isLoading ? <CircularProgress size='1.75rem' /> : 'Verstuur'}
                 </Button>
-                <Grid container>
-                    <Grid item xs>
-                        <Button onClick={onHasCode} size="small">
-                            Ik heb al een code
-                        </Button>
-                    </Grid>
-                    <Grid item>
-                        <Link href="/" variant="body2">
-                            Aanmelden als feut
-                        </Link>
-                    </Grid>
-                </Grid>
             </Box>
+            <Button onClick={onHasCode} size="small" fullWidth variant='outlined'>
+                Ik heb al een code
+            </Button>
         </>
     );
 }
