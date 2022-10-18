@@ -37,6 +37,15 @@ const theme = createTheme({
             '"Segoe UI Emoji"',
             '"Segoe UI Symbol"',
         ].join(','),
+    },
+    components: {
+        MuiTooltip: {
+            styleOverrides: {
+                tooltip: {
+                    fontSize: '.8rem'
+                }
+            }
+        }
     }
 });
 
