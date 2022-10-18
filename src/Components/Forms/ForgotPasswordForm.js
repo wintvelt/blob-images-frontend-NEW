@@ -14,7 +14,7 @@ import { toast } from 'react-toastify';
 export default function ForgotPasswordForm(props) {
     const { handleSubmit, control, getValues, setFocus } = useForm({
         defaultValues: {
-            email: props.emailState?.email || '',
+            email: props.email,
         }
     });
     const [isLoading, setIsLoading] = React.useState(false);
@@ -29,8 +29,8 @@ export default function ForgotPasswordForm(props) {
             setIsLoading(true);
             await Auth.forgotPassword(data.email);
             toast.info('Email verstuurd - check je mailbox');
-            props.setEmailState({
-                hasEmail: true,
+            props.setPageState({
+                show: 'verifyCode',
                 email: data.email
             });
         } catch (error) {
@@ -46,9 +46,9 @@ export default function ForgotPasswordForm(props) {
 
     const onHasCode = () => {
         const data = getValues();
-        props.setEmailState({
-            hasEmail: true,
-            email: data.email || ''
+        props.setPageState({
+            show: 'verifyCode',
+            email: data.email
         })
     };
 

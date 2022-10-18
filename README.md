@@ -51,10 +51,10 @@ For normal pages
 
 #### Auth pages
 For auth, pages are (all located in root)
-- [ ] `login.js` - login form + create account form
+- [x] `login.js` - login form + create account form
     - [x] implement forgotpsw - simple link to forgotpsw page
     - [x] has createaccount form, to complete account after login with tmp password
-    - [ ] catch other challenges and errors
+    - [x] catch other challenges and errors
 - [x] `forgotpassword.js` - user triggered when they forgot psw, allows user to ask to reset psw
     - basic:
         - user fills in email and sends form
@@ -67,11 +67,16 @@ For auth, pages are (all located in root)
     - [x] setpassword is implemented on same page
     - [x] test various scenarios
     - [x] it should be possible to navigate from scratch to page with verification code
+    - [ ] after verification, a success message is shown, with link to go to groups page
 - [ ] `signup.js` - allows user to sign up
     - the url should contain a query parameter `inviteid`, unless direct signup is allowed
         - this is passed to cognito on signup
         - the cognito backend preSignup lambda verifies the inviteId (unless env vars allow direct signup)
-    - after signup user is redirected to the verify page
+    - after signup user is redirected to the verification form
+        - user receives an email with a verification code
+        - verification form has email + code
+        - after submit, a message is displayed that verification is complete
+            - or error message with option to resend verification code
     - to develop/ test
         - [ ] create the signup page
         - [ ] integrate the verify page
