@@ -71,6 +71,7 @@ For auth, pages are (all located in root)
 - [ ] `signup.js` - allows user to sign up
     - the url should contain a query parameter `inviteid`, unless direct signup is allowed
         - this is passed to cognito on signup
+            - inviteId is the otob (from blob-common) of the `{ PK, SK }` object of the invite
         - the cognito backend preSignup lambda verifies the inviteId (unless env vars allow direct signup)
     - after signup user is redirected to the verification form
         - user receives an email with a verification code
@@ -95,7 +96,7 @@ For auth, pages are (all located in root)
         - the email address otherwise
     - in the db, the invite will be stored as a membership record with invite status
     - the `inviteId` for the frontend - included in email to invitee - is the encoded PK and SK of the invite record
-- Possible cases for the invite page, based on response from getting invite from DB:
+- Possible cases for the invite page, based on response from getting invite from DB (which is code in api-invites):
     - `"invite ID invalid"` or `"invite not found"` -> display error
     - `"invite not for you"`
         - if user is logged in: invite is for another user -> do not allow acceptance
@@ -107,6 +108,21 @@ For auth, pages are (all located in root)
         - if user is not logged in -> allow signup
     - otherwise invite must be for this logged in user -> allow acceptance
 
+- [x] create an invite via live dev site
+- [x] get the inviteId from the email
+- [x] store the inviteId in cypress env vars
+- [x] visit the /invite/[inviteId] page
+- [x] display the invite info
+    - [x] show group name and description, invitor name, message, valid date
+    - [x] show group picture on left side
+- [x] reload on logout
+- [ ] show and test error situations
+    - [x] `"invite ID invalid"` or `"invite not found"`
+    - [x] `"invite not for you"`
+        - [x] if user is logged in: invite is for another user -> do not allow acceptance
+        - [x] if user is not logged in: invite is for an existing user -> prompt to log in
+    - [x] `"invite already accepted"`: invite is already accepted  -> show message
+    - [x] `"invite expired"`: invite expired -> show message
 
 ### How nav works
 Every page needs a `getServerSideProps`, 
