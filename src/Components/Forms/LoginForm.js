@@ -111,7 +111,7 @@ export default function LoginForm({ onCreateAccount }) {
                     Op deze pagina is niet zoveel meer te doen.
                     Bezoek anders je groepen, of een andere pagina.
                 </Typography>
-                <Link href='/groups'>→ Ga naar mijn groepen</Link>
+                <Link href='/groups' data-cy='logged in'>→ Ga naar mijn groepen</Link>
             </>}
         </>
     );

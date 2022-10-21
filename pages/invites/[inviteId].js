@@ -22,12 +22,12 @@ const parseGroupId = (inviteId) => {
 export default function InvitePage(props) {
     // need to get user client side, because page reload is required when user logs out
     const { user } = useUser();
-    const router = useRouter();
-    const groupId = parseGroupId(router.query.inviteId);
+    const router = useRouter(); // router needed for reload
+    const groupId = parseGroupId(props.inviteId);
 
     React.useEffect(() => {
         if (user.isAuthenticated !== props.user.isAuthenticated) {
-            router.reload(window.location.pathname)
+            router.reload();
         };
     }, [user.isAuthenticated])
 
@@ -38,7 +38,7 @@ export default function InvitePage(props) {
 
     return (
         <InviteWrapper background={bgImage}>
-            {props.inviteResult && <InviteBlock invite={props.inviteResult} user={user} />}
+            {props.inviteResult && <InviteBlock invite={props.inviteResult} inviteId={props.inviteId} user={user} />}
             {props.error && <ErrorBlock error={props.error} groupId={groupId} user={user} />}
         </InviteWrapper>
     );
@@ -49,10 +49,10 @@ async function getSSRInvite(context) {
     const inviteId = context.params?.inviteId;
     try {
         const inviteResult = await API.get('blob-images', `/invites/${inviteId}`);
-        return { inviteResult }
+        return { inviteResult, inviteId }
     } catch (err) {
         console.log(err.response.data)
-        return err.response.data
+        return { ...err.response.data, inviteId }
     }
 }
 

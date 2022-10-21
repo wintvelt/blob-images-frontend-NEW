@@ -22,7 +22,7 @@ describe('Test invite logging in and out', () => {
     cy.get('[data-cy="email"]').type(Cypress.env('TEST_EMAIL'))
     cy.get('[data-cy="password"]').type(Cypress.env('TEST_PASSWORD'))
     cy.get('[data-cy="submit"]').click()
-    cy.get('h1').should('include.text', 'Hi')
+    cy.get('[data-cy="logged in"]').should('be.visible')
     cy.visit(`http://localhost:3000/invites/${Cypress.env('TEST_INVITE')}`)
 
     cy.get('[data-cy="intro1"]').should('include.text', Cypress.env('TEST_USERNAME'))
@@ -49,7 +49,7 @@ describe('Test invite for someone else', () => {
     cy.get('[data-cy="email"]').type(Cypress.env('TEST_EMAIL'))
     cy.get('[data-cy="password"]').type(Cypress.env('TEST_PASSWORD'))
     cy.get('[data-cy="submit"]').click()
-    cy.get('h1').should('include.text', 'Hi')
+    cy.get('[data-cy="logged in"]').should('be.visible')
     cy.visit(`http://localhost:3000/invites/${Cypress.env('TEST_INVITE_OTHER')}`)
 
     cy.get('h1').should('include.text', 'Uitnodiging is niet voor jou')
@@ -68,7 +68,8 @@ describe('Test accepted invite', () => {
     cy.get('[data-cy="email"]').type(Cypress.env('TEST_EMAIL'))
     cy.get('[data-cy="password"]').type(Cypress.env('TEST_PASSWORD'))
     cy.get('[data-cy="submit"]').click()
-    cy.get('h1').should('include.text', 'Hi')
+    cy.get('[data-cy="logged in"]').should('be.visible')
+
     cy.visit(`http://localhost:3000/invites/${Cypress.env('TEST_INVITE_ACCEPTED')}`)
 
     cy.get('h1').should('include.text', 'Uitnodiging al geaccepteerd')
@@ -82,5 +83,28 @@ describe('Test expired invite', () => {
 
     cy.get('h1').should('include.text', 'verlopen')
     cy.get('[data-cy="errorlink"]').should('not.exist')
+  })
+})
+
+describe('Test decline and accept invite', () => {
+  beforeEach(() => {
+    cy.visit(`http://localhost:3000/login`)
+    cy.get('[data-cy="email"]').type(Cypress.env('TEST_EMAIL2'))
+    cy.get('[data-cy="password"]').type(Cypress.env('TEST_PASSWORD'))
+    cy.get('[data-cy="submit"]').click()
+    cy.get('[data-cy="logged in"]').should('be.visible')
+    // TODO: invite wintvelt@xs4all before each test
+  })
+
+  it('is possible to accept the invite', () => {
+    cy.visit(`http://localhost:3000/invites/${Cypress.env('TEST_INVITE2')}`)
+    cy.get('h1').should('not.be.visible')
+    // TODO: accept the invite
+    // TODO: cleanup afterwards (leave the group)
+  })
+  it('is possible to decline the invite', () => {
+    cy.visit(`http://localhost:3000/invites/${Cypress.env('TEST_INVITE2')}`)
+    cy.get('h1').should('not.be.visible')
+    // TODO: decline the invite
   })
 })
