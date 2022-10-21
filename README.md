@@ -55,6 +55,11 @@ For auth, pages are (all located in root)
     - [x] implement forgotpsw - simple link to forgotpsw page
     - [x] has createaccount form, to complete account after login with tmp password
     - [x] catch other challenges and errors
+    - [x] account creation as separate page **rejected**:
+        - it would allow a link directly from an mail, with email and tmp-password already set
+        - so that the login with tmp-password step could be skipped
+        - but tmp-password would need to be in the link/ query, which is unsafe
+    - [ ] (link to) redirect on succesful login
 - [x] `forgotpassword.js` - user triggered when they forgot psw, allows user to ask to reset psw
     - basic:
         - user fills in email and sends form
@@ -73,15 +78,26 @@ For auth, pages are (all located in root)
         - this is passed to cognito on signup
             - inviteId is the otob (from blob-common) of the `{ PK, SK }` object of the invite
         - the cognito backend preSignup lambda verifies the inviteId (unless env vars allow direct signup)
-    - after signup user is redirected to the verification form
+        - [ ] backend `api-user-createUser` handler should - in case of creation - also accept/ confirm membership based on the invite
+            - [ ] call/ do stuff that accept-invite API does
+            - [ ] ensure that legacy stuff continues to work
+                - cannot be a date, users may still sign up after a date
+                - [ ] in Cognito user pool, add custom attribute `autoAccept` boolean
+                - [ ] in new frontend, send this with custom data
+                - [ ] in `api-user-createUser`, check for this attribute, and if true, accept the invite
+    - after signup user is shown succes message with link to the verification form
         - user receives an email with a verification code
         - verification form has email + code
         - after submit, a message is displayed that verification is complete
             - or error message with option to resend verification code
     - to develop/ test
         - [ ] create the signup page
-        - [ ] integrate the verify page
+        - [ ] verify page - cannot be auto-tested, because it needs key from email
 - [ ] `verify.js` - form to verify user email address, follow-up on mail with verification code
+    - [ ] email and code can be in query parameters
+    - [ ] if both are: check them and show
+        - [ ] success message if verification worked - link to group page from invite
+        - [ ] failure message if it failed - button to resend a verification link
 
 ### Invites
 - The invite route has an `inviteId`.
@@ -105,8 +121,14 @@ For auth, pages are (all located in root)
     - `"invite expired"`: invite expired -> show message
     - check if invite is for an email, and if so
         - if user is logged in -> allow acceptance with warning if email address is different
-        - if user is not logged in -> allow signup
+        - if user is not logged in -> allow acceptance (with signup/ login)
     - otherwise invite must be for this logged in user -> allow acceptance
+- Acceptance of invite:
+    - if user is logged in
+        - call accept-invite API
+        - show success message with link to group
+    - if user is not logged in
+        - redirect to signup page, with inviteId in query
 
 - [x] create an invite via live dev site
 - [x] get the inviteId from the email
@@ -116,13 +138,21 @@ For auth, pages are (all located in root)
     - [x] show group name and description, invitor name, message, valid date
     - [x] show group picture on left side
 - [x] reload on logout
-- [ ] show and test error situations
+- [x] show and test error situations
     - [x] `"invite ID invalid"` or `"invite not found"`
     - [x] `"invite not for you"`
         - [x] if user is logged in: invite is for another user -> do not allow acceptance
         - [x] if user is not logged in: invite is for an existing user -> prompt to log in
     - [x] `"invite already accepted"`: invite is already accepted  -> show message
     - [x] `"invite expired"`: invite expired -> show message
+- [x] implement acceptance
+    - [x] if user is logged in
+    - [x] if user is not logged in
+- [x] implement decline
+- [ ] tests for accept and decline
+    - finish test scripts after
+        - sending invitations is possible
+        - leaving a group is possible
 
 ### How nav works
 Every page needs a `getServerSideProps`, 
@@ -166,6 +196,10 @@ This is implemented as follows
     - which checks if there is a toast in the pathname, 
     - and if so, displays the toast
     - so this can be shown on any page
+- The custom `<Link>` component catches if the user is not logged in and tries to visit a protected page
+    - if so, it displays a toast with an error message
+
+- [ ] redirect directly from `getServerSideProps`
 
 ### Personal pages
 The following pages (routes) show a personal header:
