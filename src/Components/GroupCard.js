@@ -2,11 +2,21 @@ import { Badge } from '@mui/material';
 import Typography from '@mui/material/Typography'
 import { makeImageUrl } from '../utils/image-helper'
 import styles from './Groupcard.module.css'
+import Link from './Link';
 
-const GroupCard = ({ name = 'Een groep', since = 'ooit', photoUrl, newPicsCount = 0 }) => {
+const GroupCard = ({
+  groupId,
+  name = 'Een groep',
+  since = 'ooit',
+  photoUrl,
+  newPicsCount = 0,
+  members,
+  albums
+}) => {
   const src = makeImageUrl(photoUrl, 240, 240);
+  const groupLink = `/groups/${groupId}`
   return <Badge badgeContent={newPicsCount} color='secondary'>
-    <figure className={styles.figure}>
+    <Link noStyleStyle className={styles.figure} href={groupLink}>
       <div className={styles.imageframe}>
         <img className={styles.img} src={src} />
         <figcaption className={styles.figcaption}>
@@ -14,11 +24,13 @@ const GroupCard = ({ name = 'Een groep', since = 'ooit', photoUrl, newPicsCount 
             {name}
           </Typography>
           <Typography variant='caption'>
-            Sinds {since.slice(0, 4)} · 15 leden · 14 albums
+            Sinds {since.slice(0, 4)}
+            {(members) && ' · 15 leden'}
+            {(albums) && ' · 14 albums'}
           </Typography>
         </figcaption>
       </div>
-    </figure>
+    </Link>
   </Badge>
 }
 

@@ -37,8 +37,9 @@ How this works on load:
 - the page prop is passed as `ssrUser` to the `UserContext`
 - `UserContext` is a context provider that stores user info
 
-This setup with `Context` does not use react-query.
+This setup with `Context` does not use react-query. So it is OK that the usercontext is rendered outside the QueryContext in `_app`.
 
+Using react-query for user state is not ideal: the fact that the initialstate is provided in props means that we need either a) pass the ssrUser from props down to every component that calls `useUser()` or b) set up complicated stuff with hydration and dehyrdation. For more info, see [here](https://tanstack.com/query/v4/docs/guides/ssr).
 
 ### Protected pages
 Every protected page needs
@@ -257,6 +258,6 @@ has tabs with (links to)
 - [x] shows group image
 - [x] shows group name
 - [x] shows since-date
-- [ ] shows # albums + # members
-    - [ ] only if included in group data
-- [ ] card is clickable - to group page
+- [x] shows # albums + # members
+    - [x] only if included in group data
+- [x] card is clickable - to group page

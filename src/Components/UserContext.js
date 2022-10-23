@@ -36,7 +36,9 @@ export function UserProvider({ ssrUser, children }) {
                 const newUser = makeUser(authResult, userData);
                 setUser(newUser);
             } catch (error) {
-                console.log(`error getting auth user: "${error}"`)
+                if (error !== 'The user is not authenticated') {
+                    console.log(`error getting auth user: "${error}"`)
+                }
             }
         }
         const getUserDbData = async () => {

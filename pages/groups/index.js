@@ -78,7 +78,7 @@ function MyGroupsPage({ path }) {
                 <Grid container spacing={2}>
                     {groups.data.map(group => (
                         <Grid item key={group.SK}>
-                            <GroupCard name={group.name} since={group.createdAt}
+                            <GroupCard groupId={group.SK} name={group.name} since={group.createdAt}
                                 photoUrl={group.photo.url} newPicsCount={groups.newPicsCount} />
                         </Grid>
                     ))}
