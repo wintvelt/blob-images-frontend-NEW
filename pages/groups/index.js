@@ -53,6 +53,7 @@ function MyGroupsPage({ path }) {
             {groups.isSuccess && <Container maxWidth='lg'>
                 <Box sx={barStyle}>
                     <Button
+                        variant='outlined'
                         color='primary'
                         id="sort-button"
                         data-cy="sort-button"
@@ -67,6 +68,7 @@ function MyGroupsPage({ path }) {
                         datum ↑
                     </Button>
                     <Button
+                        variant='outlined'
                         color='primary'
                         sx={noTransform}
                         startIcon={<Add />}>

@@ -3,8 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 
 const UserContext = createContext({
     user: undefined,
-    setUser: async (user) => null,
-    redirectUnAuth: async () => null,
+    setUser: (user) => null
 });
 const initialUser = { isAuthenticated: false, hasDbData: false };
 
@@ -46,12 +45,14 @@ export function UserProvider({ ssrUser, children }) {
                 const newUser = addDbUser(user, userData);
                 setUser(newUser);
             } catch (error) {
-                console.log(`error getting auth user: "${error}"`)
+                console.log(`error getting db user: "${error}"`)
             }
         }
         if (!user.isAuthenticated) {
+            // console.log('getting user auth data')
             getAuthUser();
         } else if (!user.hasDbData) {
+            // console.log('getting user db data')
             getUserDbData();
         };
     }, [])

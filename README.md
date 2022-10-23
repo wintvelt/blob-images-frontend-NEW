@@ -7,7 +7,40 @@ Using
 - [ ] [Serverless]() to deploy to AWS
 - [ ] [CircleCI]() or [Github Actions]() for CI/CD deployment
 
-### How AUTH works
+## How AUTH works
+### User state management
+Currently in `Context`
+- `UserContext` in Components, and a usercontext provider at _app level
+- LoginForm calls Login function
+- Logout function in UserMenu calls logout
+
+Amplify `Auth` is called in
+- `UserContext`: `.currentAuthenticatedUser()`
+- `Protected` Page wrapper: 
+    - `.currentAuthenticatedUser()` in SSR function
+- `CreateAccountForm`: `.completePassword()`
+- `ForgotPasswordForm`: `.forgotPassword()`
+- `LoginForm`: `.signIn()`
+- `SetPasswordForm`:
+    - `.SignIn()`
+    - `.forgotPassword()`
+    - `.forgotPasswordSubmit()`
+- `NavBar-UserMenu`: `.signOut()`
+
+How this works on load:
+- a page that is loaded *may* receive a `user` prop from the server
+    - a page may include the `Protected` wrapper
+    - if so, it should also include the SSR function for user
+    - which at server side checks (from the context) if the user is logged in
+    - and if so, sends the Auth user as a prop to the page
+- the page prop user contains *only* the Auth info about the user - so e.g. not the photourl
+- the page prop is passed as `ssrUser` to the `UserContext`
+- `UserContext` is a context provider that stores user info
+
+This setup with `Context` does not use react-query.
+
+
+### Protected pages
 Every protected page needs
 - `export ... getServerSideProps` to check server side if the user is authenticated, and to pass any user info to pageProps
     - should also be included on public pages, because every page displays navbar with user menu

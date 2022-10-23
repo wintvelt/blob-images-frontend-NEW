@@ -31,6 +31,7 @@ export function Protected({ children }) {
 }
 
 export async function getSSRUser(context) {
+    // if user is logged in, SSR will get it from context
     const { Auth } = withSSRContext(context)
     try {
         const authResult = await Auth.currentAuthenticatedUser();

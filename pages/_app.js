@@ -33,8 +33,9 @@ export default function MyApp(props) {
     const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
     const router = useRouter();
     React.useEffect(() => {
+        // display toast if it was passed in the query parameters
         if (router.isReady && router.query.toast) {
-            toast.info(router.query.toast)
+            toast.info(router.query.toast, { toastId: 'id to prevent duplicate'})
         }
     }, [router.isReady, router.pathname, router.query.toast])
     return (
