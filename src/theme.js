@@ -45,6 +45,22 @@ const theme = createTheme({
                     fontSize: '.8rem'
                 }
             }
+        },
+        MuiBadge: {
+            styleOverrides: {
+                badge: {
+                    top: '2.4rem',
+                    right: '2.4rem'
+                }
+            }
+        },
+        MuiLink: {
+            styleOverrides: {
+                root: {
+                    textDecoration: 'none',
+                    '&:hover': { textDecoration: 'underline' }
+                }
+            }
         }
     }
 });

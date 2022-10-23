@@ -56,7 +56,7 @@ export function UserProvider({ ssrUser, children }) {
         };
     }, [])
 
-    // memoized to prevent unnecessary re-renders. NB: Ignore the warning in build on dependencies
+    // memoized to prevent unnecessary re-renders. NB: Ignore the warning on dependencies in build
     const memoizedContext = useMemo(() => {
         return { user, setUser }
     }, [user.isAuthenticated, user.name, user.email, user.photoUrl, user.photoCount, user.createdAt, user.hasDbData]);

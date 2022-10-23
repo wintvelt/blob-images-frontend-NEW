@@ -213,3 +213,17 @@ These pages import a `PersonalHeader` component, shown at the top of the page. T
 - Tab bar with links to the personal pages
 
 The regular page content is shown below the personal header.
+
+### Groups page
+has tabs with (links to)
+- albums
+- members
+- group profile
+
+#### Groups card
+- [x] shows group image
+- [x] shows group name
+- [x] shows since-date
+- [ ] shows # albums + # members
+    - [ ] only if included in group data
+- [ ] card is clickable - to group page

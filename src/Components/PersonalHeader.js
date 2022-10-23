@@ -46,9 +46,14 @@ const editButtonStyle = {
     marginLeft: '1rem'
 }
 
+const tabBarStyle = {
+    backgroundColor: '#ffffff',
+    boxShadow: 1
+}
+
 const Overlay = ({ children }) => (
     <Box sx={overlayStyle}>
-        <Container maxWidth='sm' sx={containerStyle}>{children}</Container>
+        <Container maxWidth='lg' sx={containerStyle}>{children}</Container>
     </Box>)
 
 const LinkTab = ({ value, label, title, ...linkProps }) => (
@@ -83,8 +88,8 @@ function PersonalHeader({ path }) {
                     </div>
                 </Overlay>
             </Box>
-            <Box sx={{ boxShadow: 1 }}>
-                <Container maxWidth='sm'>
+            <Box sx={tabBarStyle}>
+                <Container maxWidth='lg'>
                     <Tabs value={activeTab}>
                         <LinkTab title="Waar ik lid ben" value='groups' label='Mijn groepen' href='/groups' />
                         <LinkTab title="Mijn eigen foto's" label="Foto's" value='photos' href='/photos' />
