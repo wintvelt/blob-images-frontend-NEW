@@ -82,7 +82,7 @@ function PersonalHeader({ path }) {
                             <IconButton variant='outlined' sx={editButtonStyle}><EditIcon /></IconButton>
                         </Typography>
                         <Typography variant='body2'>
-                            {(user.createdAt) && `Lid sinds ${user.createdAt}﹒`}
+                            {(user.createdAt) && `Lid sinds ${user.createdAt} · `}
                             {`${user.photoCount || 'geen eigen'} foto's`}
                         </Typography>
                     </div>

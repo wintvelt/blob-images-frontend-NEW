@@ -3,7 +3,6 @@ import Container from '@mui/material/Container';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
-import CircularProgress from '@mui/material/CircularProgress';
 import Sort from '@mui/icons-material/Sort';
 import Add from '@mui/icons-material/Add';
 import { getSSRUser, Protected } from '../../src/Components/Protected';
@@ -12,7 +11,7 @@ import PersonalHeader from '../../src/Components/PersonalHeader';
 import GroupCard from '../../src/Components/GroupCard';
 import { API } from 'aws-amplify';
 import { useQuery } from '@tanstack/react-query';
-import { Typography } from '@mui/material';
+import LoadingBlock from '../../src/Components/LoadingBlock';
 
 const barStyle = {
     my: 4,
@@ -21,10 +20,6 @@ const barStyle = {
     gap: '1rem',
     justifyContent: 'flex-end'
 };
-const loadingStyle = {
-    p: 4,
-    color: '#aaaaaa'
-}
 
 const noTransform = { textTransform: 'none' }
 
@@ -44,12 +39,7 @@ function MyGroupsPage({ path }) {
     return (
         <Protected>
             <PersonalHeader path={path} />
-
-            {groups.isLoading && <Container maxWidth='lg'>
-                <Typography variant='h3' component='h1' align='center' sx={loadingStyle}>
-                    <CircularProgress color='inherit' />{' '}Laden...
-                </Typography>
-            </Container>}
+            {groups.isLoading && <LoadingBlock/>}
             {groups.isSuccess && <Container maxWidth='lg'>
                 <Box sx={barStyle}>
                     <Button
@@ -70,6 +60,7 @@ function MyGroupsPage({ path }) {
                     <Button
                         variant='outlined'
                         color='primary'
+                        onClick={handleClickNew}
                         sx={noTransform}
                         startIcon={<Add />}>
                         Nieuwe groep
@@ -79,7 +70,8 @@ function MyGroupsPage({ path }) {
                     {groups.data.map(group => (
                         <Grid item key={group.SK}>
                             <GroupCard groupId={group.SK} name={group.name} since={group.createdAt}
-                                photoUrl={group.photo.url} newPicsCount={groups.newPicsCount} />
+                                photoUrl={group.photo.url} newPicsCount={group.newPicsCount} 
+                                memberCount={group.memberCount} photoCount={group.photoCount}/>
                         </Grid>
                     ))}
                 </Grid>

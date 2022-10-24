@@ -6,12 +6,14 @@ import ProTip from '../../../src/ProTip';
 import Link from '../../../src/Components/Link';
 import { getSSRUser, Protected } from '../../../src/Components/Protected';
 import { getSSRRoute } from '../../../src/utils/route-helper';
+import GroupHeader from '../../../src/Components/GroupHeader';
 
 const boxMargin = { backgroundColor: '#00ccee' }
 
-export default function GroupPage() {
+export default function GroupPage({ path, groupId }) {
     return (
         <Protected>
+            <GroupHeader path={path} groupId={groupId} />
             <Container maxWidth="sm" sx={boxMargin}>
                 <Box sx={{ my: 4 }}>
                     <Typography variant="h4" component="h1" gutterBottom>

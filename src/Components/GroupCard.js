@@ -10,8 +10,8 @@ const GroupCard = ({
   since = 'ooit',
   photoUrl,
   newPicsCount = 0,
-  members,
-  albums
+  memberCount,
+  albumCount
 }) => {
   const src = makeImageUrl(photoUrl, 240, 240);
   const groupLink = `/groups/${groupId}`
@@ -20,13 +20,13 @@ const GroupCard = ({
       <div className={styles.imageframe}>
         <img className={styles.img} src={src} />
         <figcaption className={styles.figcaption}>
-          <Typography variant='h6'>
+          <Typography variant='h5'>
             {name}
           </Typography>
           <Typography variant='caption'>
             Sinds {since.slice(0, 4)}
-            {(members) && ' · 15 leden'}
-            {(albums) && ' · 14 albums'}
+            {(memberCount) &&  ` · ${memberCount} leden`}
+            {(albumCount) && ` · ${albumCount} albums`}
           </Typography>
         </figcaption>
       </div>
