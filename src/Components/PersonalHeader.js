@@ -83,7 +83,7 @@ function PersonalHeader({ path }) {
                         </Typography>
                         <Typography variant='body2'>
                             {(user.createdAt) && `Lid sinds ${user.createdAt} · `}
-                            {`${user.photoCount || 'geen eigen'} foto's`}
+                            {`${user.photoCount || 'geen eigen'} foto${(user.photoCount !== 1) && '\'s'}`}
                         </Typography>
                     </div>
                 </Overlay>

@@ -9,9 +9,9 @@ import { getSSRUser, Protected } from '../../src/Components/Protected';
 import { getSSRRoute } from '../../src/utils/route-helper';
 import PersonalHeader from '../../src/Components/PersonalHeader';
 import GroupCard from '../../src/Components/GroupCard';
+import LoadingBlock from '../../src/Components/LoadingBlock';
 import { API } from 'aws-amplify';
 import { useQuery } from '@tanstack/react-query';
-import LoadingBlock from '../../src/Components/LoadingBlock';
 
 const barStyle = {
     my: 4,
@@ -39,7 +39,7 @@ function MyGroupsPage({ path }) {
     return (
         <Protected>
             <PersonalHeader path={path} />
-            {groups.isLoading && <LoadingBlock/>}
+            {groups.isLoading && <LoadingBlock />}
             {groups.isSuccess && <Container maxWidth='lg'>
                 <Box sx={barStyle}>
                     <Button
@@ -70,8 +70,8 @@ function MyGroupsPage({ path }) {
                     {groups.data.map(group => (
                         <Grid item key={group.SK}>
                             <GroupCard groupId={group.SK} name={group.name} since={group.createdAt}
-                                photoUrl={group.photo.url} newPicsCount={group.newPicsCount} 
-                                memberCount={group.memberCount} photoCount={group.photoCount}/>
+                                photoUrl={group.photo.url} newPicsCount={group.newPicsCount}
+                                memberCount={group.memberCount} photoCount={group.photoCount} />
                         </Grid>
                     ))}
                 </Grid>

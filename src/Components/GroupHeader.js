@@ -98,10 +98,11 @@ function GroupHeader({ path, groupId }) {
                         {description}
                     </Typography>
                     <Typography variant='body2'>
-                        {(createdAt) && `Opgericht ${createdAt.slice(0,4)}`}
-                        {(memberCount !== undefined) && ` · ${memberCount || 'geen'} leden`}
-                        {(albumCount) && ` · ${albumCount} albums`}
-                        {(photoCount !== undefined) && ` · ${photoCount || 'geen'} foto's`}
+                        {(createdAt) && `Opgericht ${createdAt.slice(0, 4)}`}
+                        {(memberCount !== undefined) &&
+                            ` · ${memberCount || 'geen'} ${(memberCount === 1) ? 'lid' : 'leden'}`}
+                        {(albumCount) && ` · ${albumCount} album${(albumCount !== 1) && 's'}`}
+                        {(photoCount !== undefined) && ` · ${photoCount || 'geen'} foto${(albumCount !== 1) && '\'s'}`}
                     </Typography>
                 </Overlay>
             </Box>

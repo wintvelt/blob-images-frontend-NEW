@@ -1,0 +1,46 @@
+.album {
+    cursor: pointer;
+    width: 320px;
+    height: 240px;
+    margin: 0em;
+    outline: 1.2em solid rgba(255, 255, 255, .8);
+    outline-offset: -1.2em;
+    border-radius: 2px;
+    box-shadow:
+        /* #ecf.. is the thema background color */
+        0px -6px 0px -5px #ecf7f9,
+        0px -7px 0px -5px #64649c,
+        0px -11px 0px -8px #ecf7f9,
+        0px -12px 0px -8px #64649c;
+    transition: box-shadow .1s ease-in-out;
+}
+
+.album:hover {
+    box-shadow: 0px -8px 0px -5px #ecf7f9,
+        0px -9px 0px -5px #64649c,
+        0px -16px 0px -9px #ecf7f9,
+        0px -17px 0px -9px #64649c;
+    text-decoration: none;
+}
+
+.overlay {
+    width: 100%;
+    height: 100%;
+    border-radius: 2px;
+    color: white;
+    display: flex;
+    padding: 1.2em;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: flex-end;
+    background: linear-gradient(180deg,transparent 0,rgba(0,0,0,0.5) 50%,rgba(0,0,0,0.7) 80%,rgba(0,0,0,0.8));
+    transition: padding .1s ease-in-out;
+}
+
+.album:hover .overlay {
+    padding-bottom: 2em;
+}
+
+.overlay > * {
+    padding-right: 8px;
+}

@@ -1,7 +1,7 @@
 import { Badge } from '@mui/material';
 import Typography from '@mui/material/Typography'
 import { makeImageUrl } from '../utils/image-helper'
-import styles from './Groupcard.module.css'
+import styles from './GroupCard.module.css'
 import Link from './Link';
 
 const GroupCard = ({
@@ -25,8 +25,8 @@ const GroupCard = ({
           </Typography>
           <Typography variant='caption'>
             Sinds {since.slice(0, 4)}
-            {(memberCount) &&  ` · ${memberCount} leden`}
-            {(albumCount) && ` · ${albumCount} albums`}
+            {(memberCount) &&  ` · ${memberCount} ${(memberCount === 1)? 'lid' : 'leden'}`}
+            {(albumCount) && ` · ${albumCount} album${(album !== 1) && "s"}`}
           </Typography>
         </figcaption>
       </div>
