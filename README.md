@@ -250,9 +250,11 @@ The regular page content is shown below the personal header.
 
 ### Groups page
 has tabs with (links to)
-- albums
-- members
-- group profile
+- [x] albums
+    - [ ] remove sort
+    - [ ] new groep
+- [ ] members
+- [ ] group profile
 
 #### Groups card
 - [x] shows group image
@@ -261,3 +263,12 @@ has tabs with (links to)
 - [x] shows # albums + # members
     - [x] only if included in group data
 - [x] card is clickable - to group page
+
+### Albums page
+- [ ] sort
+- [ ] new album
+- [ ] album is clickable
+
+### Album page
+- [ ] Album header
+- [ ] 
