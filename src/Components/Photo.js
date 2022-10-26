@@ -3,6 +3,7 @@ import ImageListItemBar from "@mui/material/ImageListItemBar";
 
 // TODO: layout, clickability, and badge
 // put css in module
+// use photo component, to make it reusable for non-album photos too
 
 export default function Photo() {
     return <ImageListItem key={photo.SK} sx={{ overflow: 'hidden' }}>
