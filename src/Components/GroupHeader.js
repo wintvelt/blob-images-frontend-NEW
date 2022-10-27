@@ -74,10 +74,9 @@ function GroupHeader({ path, groupId }) {
     });
     const { name, description, createdAt, photoCount, memberCount, albumCount } = group.data || {}
     const activeTab =
-        (path === '/groups/[id]/members') ? 'members'
-            : (path === '/groups/[id]/edit') ? 'edit'
+        (path.indexOf('/members') > 0) ? 'members'
+            : (path.indexOf('/edit') > 0) ? 'edit'
                 : 'albums'
-
     const photoUrl = group.data?.photo?.url;
     const memoedOverlayStyle = React.useMemo(() => ({
         ...bgImgStyle,

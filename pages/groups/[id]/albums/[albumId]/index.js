@@ -107,7 +107,7 @@ export default function AlbumPage({ path, groupId, albumId }) {
                 </ImageList>
                 <Grid container spacing={4}>
                     {photos.map(photo => (
-                        <Grid item key={photo.SK}>
+                        <Grid item xs={12} md={3} key={photo.SK}>
                             <pre>{JSON.stringify(photo, null, 2)}</pre>
                             {/* <AlbumCard groupId={album.PK?.slice(2)} albumId={album.SK}
                                 name={album.name} since={album.createdAt}

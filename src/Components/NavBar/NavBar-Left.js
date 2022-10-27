@@ -46,7 +46,8 @@ const BackRoute = ({ groupId, albumId, backRoute }) => {
             group.data.name
             : (backRoute === '/groups') ? 'Mijn groepen'
                 : (backRoute === '/photos') ? "Mijn foto's"
-                    : "Terug"
+                    : (backRoute.split('?')[0].split('/').slice(-1)[0] === 'members') ? 'Leden'
+                        : "Terug"
 
     return <Link href={backRoute} color="inherit" sx={backrouteStyle}>
         <KeyboardArrowLeft />

@@ -19,7 +19,7 @@ const fadeIn = keyframes`
 const loadingStyle = {
     p: 4,
     color: '#aaaaaa',
-    animation: `${fadeIn} 1s`
+    animation: `${fadeIn} 2s`
 }
 
 function LoadingBlock() {

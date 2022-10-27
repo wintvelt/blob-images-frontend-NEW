@@ -13,9 +13,9 @@ const AlbumCard = ({
   newPicsCount,
   photoCount,
 }) => {
-  const src = makeImageUrl(photoUrl, 320);
+  const src = makeImageUrl(photoUrl, 500);
   const albumLink = `/groups/${groupId}/albums/${albumId}`
-  return <Badge badgeContent={newPicsCount} color='secondary'>
+  return <Badge className={styles.badge} badgeContent={newPicsCount} color='secondary'>
     <Link noStyleStyle className={styles.album} href={albumLink} sx={{ backgroundImage: `url(${src})` }}>
       <div className={styles.overlay} >
         <Typography variant='h5'>

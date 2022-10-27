@@ -7,6 +7,9 @@ Using
 - [ ] [Serverless]() to deploy to AWS
 - [ ] [CircleCI]() or [Github Actions]() for CI/CD deployment
 
+General
+- [ ] catch useQuery error states
+
 ## How AUTH works
 ### User state management
 Currently in `Context`
@@ -247,22 +250,60 @@ These pages import a `PersonalHeader` component, shown at the top of the page. T
 - Tab bar with links to the personal pages
 
 The regular page content is shown below the personal header.
+- Groups: Regular content = Group list
 
-### Groups page
-has tabs with (links to)
-- [x] albums
-    - [ ] remove sort
-    - [ ] new groep
-- [ ] members
-- [ ] group profile
-
-#### Groups card
+#### Group card
 - [x] shows group image
 - [x] shows group name
 - [x] shows since-date
 - [x] shows # albums + # members
     - [x] only if included in group data
 - [x] card is clickable - to group page
+
+### Members page
+- [x] get members with API
+- [ ] invite button in top row
+- [ ] member content in list
+    - [x] Avatar
+    - [x] Name
+    - [x] email (clickable)
+    - [x] member since
+    - [ ] member options
+        - [ ] make guest/ admin
+        - [ ] appoint founder
+        - [ ] ban from group
+- [x] current user has badge
+- [x] founder has badge
+
+In original:
+- menu is set for the entire list
+- when button is clicked on a line, the anchor is passed to that button + member details are passed to anchor state
+- the member record contains info on the options that the current user has for that member. Options may include:
+    - leave (user can apply to themselves)
+    - guestify (of another user)
+    - adminify
+    - founderify
+    - ban
+    - uninvite
+
+### Members invite page
+- [x] Ensure that backroute still works + current route
+- [ ] Invite form
+    - [ ] name, email, text
+    - [ ] validations
+- [ ] state for success or error
+- [ ] content for success or error with links
+- [ ] api call (useQuery) to invite
+
+### Group page
+Tabs are
+- [x] albums
+    - [ ] remove sort
+    - [ ] new album
+        - [ ] only if user is admin of the group - need to get membership for this
+- [ ] members
+- [ ] group profile
+
 
 ### Albums page
 - [ ] sort
@@ -271,4 +312,4 @@ has tabs with (links to)
 
 ### Album page
 - [ ] Album header
-- [ ] 
+- [ ] Photos

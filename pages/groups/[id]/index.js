@@ -71,7 +71,7 @@ export default function GroupPage({ path, groupId }) {
                 </Box>
                 <Grid container spacing={4}>
                     {albumsData.map(album => (
-                        <Grid item key={album.SK}>
+                        <Grid item xs={12} md={4} lg={4} key={album.SK}>
                             <AlbumCard groupId={album.PK?.slice(2)} albumId={album.SK}
                                 name={album.name} since={album.createdAt}
                                 photoUrl={album.photo?.url} newPicsCount={album.newPicsCount}

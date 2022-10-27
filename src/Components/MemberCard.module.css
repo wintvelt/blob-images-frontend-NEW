@@ -1,0 +1,43 @@
+.memberCard {
+    padding: 1rem;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: .5em;
+}
+
+.wrapper {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    /* min width needed for ellipsis */
+    min-width: 0;
+}
+
+.avatar {
+    width: 4rem;
+    height: 4rem;
+}
+
+.memberName {
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* min width needed for ellipsis */
+    min-width: 0;
+}
+.chips {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: .5em;
+}
+.filler {
+    flex: 1;
+}
+.editButton {
+    width: 1.5em;
+    height: 1.5em;
+    justify-self: flex-end;
+}

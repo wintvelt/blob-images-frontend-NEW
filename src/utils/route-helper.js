@@ -9,7 +9,7 @@ export const getSSRRoute = (context) => {
 
     const backRoute = (pathSegments.length < 3) ?
         '/'
-        : (pathSegments.slice(-2)[0] === 'albums') ?
+        : (pathSegments.slice(-2)[0] === 'albums' || ['members', 'photos'].includes(pathSegments.slice(-1)[0])) ?
             pathSegments.slice(0, -2).join('/')
             : pathSegments.slice(0, -1).join('/')
     return { groupId, albumId, path, backRoute }

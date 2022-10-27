@@ -18,7 +18,7 @@ const barStyle = {
     // backgroundColor: '#eeeeee',
     display: 'flex',
     gap: '1rem',
-    justifyContent: 'flex-end'
+    justifyContent: 'space-between'
 };
 
 const noTransform = { textTransform: 'none' }
@@ -57,6 +57,7 @@ function MyGroupsPage({ path }) {
                     >
                         datum ↑
                     </Button>
+                    <div></div>
                     <Button
                         variant='outlined'
                         color='primary'
@@ -68,7 +69,7 @@ function MyGroupsPage({ path }) {
                 </Box>
                 <Grid container spacing={2}>
                     {groups.data.map(group => (
-                        <Grid item key={group.SK}>
+                        <Grid item xs={12} md={4} lg={3} key={group.SK}>
                             <GroupCard groupId={group.SK} name={group.name} since={group.createdAt}
                                 photoUrl={group.photo.url} newPicsCount={group.newPicsCount}
                                 memberCount={group.memberCount} photoCount={group.photoCount} />
