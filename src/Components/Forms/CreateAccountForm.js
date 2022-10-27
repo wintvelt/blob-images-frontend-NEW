@@ -1,15 +1,13 @@
 import * as React from 'react';
 import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
-import Link from '../Link';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { useForm } from "react-hook-form";
 import NameField from './NameField';
 import NewPasswordField from './NewPasswordField';
 import OptinField from './OptinField';
-import { makeUser, useUser } from '../UserContext';
-import { API, Auth } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/router';

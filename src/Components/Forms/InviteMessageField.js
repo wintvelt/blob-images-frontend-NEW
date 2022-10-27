@@ -1,8 +1,7 @@
 import TextField from '@mui/material/TextField';
 import { useController } from "react-hook-form";
 
-function NameField({ control, fieldName = 'name', size = 'normal',
-    reqHelper = 'Vul je naam in' }) {
+export default function InviteMessageField({ control, fieldName = 'name', size = 'normal' }) {
     const {
         field: { onChange, onBlur, name, value, ref },
         fieldState: { invalid, isTouched, isDirty },
@@ -11,12 +10,12 @@ function NameField({ control, fieldName = 'name', size = 'normal',
         name: fieldName,
         control,
         rules: { required: true },
-        defaultValue: "",
+        defaultValue: ""
     });
 
     const helperText = (errors[fieldName]) ?
         // (errors.name.type === 'required') ?
-        reqHelper
+        "Je kunt alleen iemand uitnodigen als je tekst hebt"
         : " ";
 
     return (
@@ -34,10 +33,11 @@ function NameField({ control, fieldName = 'name', size = 'normal',
             required
             fullWidth
             data-cy={fieldName}
-            label="Naam"
-            autoComplete="name"
+            label="Uitnodigingstekst"
+            placeholder="Vul hier jouw tekst in"
+            multiline
+            rows={8}
+            autoComplete="message"
         />
     );
 }
-
-export default NameField;

@@ -288,10 +288,11 @@ In original:
 
 ### Members invite page
 - [x] Ensure that backroute still works + current route
-- [ ] Invite form
-    - [ ] name, email, text
-    - [ ] validations
-- [ ] state for success or error
+- [x] Invite form
+    - [x] name, email, text
+    - [x] validations
+- [ ] check for max members
+- [ ] st ate for success or error
 - [ ] content for success or error with links
 - [ ] api call (useQuery) to invite
 

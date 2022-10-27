@@ -12,6 +12,9 @@ import LoadingBlock from '../../../../src/Components/LoadingBlock';
 import { API } from 'aws-amplify';
 import { useQuery } from '@tanstack/react-query';
 import MemberCard from '../../../../src/Components/MemberCard';
+import InviteWrapper from '../../../../src/Components/Forms/InviteWrapper';
+import { makeImageUrl } from '../../../../src/utils/image-helper';
+import InviteForm from '../../../../src/Components/Forms/InviteForm';
 
 
 const barStyle = {
@@ -55,9 +58,13 @@ export default function MemberInvitePage({ path, groupId }) {
         });
         return promise;
     });
-
-    const open = false;
-    const handleClickNew = () => alert('clicked')
+    const group = useQuery(['group', groupId], ({ signal }) => {
+        const promise = API.get('blob-images', `/groups/${groupId}`);
+        signal?.addEventListener('abort', () => {
+            API.cancel(promise, "canceled albums get");
+        });
+        return promise;
+    });
 
     const membersData = React.useMemo(() => {
         if (!members.data) return null;
@@ -74,10 +81,12 @@ export default function MemberInvitePage({ path, groupId }) {
         return enhancedMembersData;
     }, [members.data]);
 
+    const groupPhoto = makeImageUrl(group.data?.photo?.url, 500);
     return (
         <Protected>
-            <GroupHeader path={path} groupId={groupId} />
-            <h1>Invite Page</h1>
+            <InviteWrapper background={groupPhoto} narrow={true}>
+                <InviteForm groupName={group.data?.name}/>
+            </InviteWrapper>
         </Protected>
     )
 }

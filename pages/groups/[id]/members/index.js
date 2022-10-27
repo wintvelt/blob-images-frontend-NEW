@@ -51,7 +51,16 @@ export default function MemberPage({ path, groupId }) {
     const members = useQuery(['members', groupId], ({ signal }) => {
         const promise = API.get('blob-images', `/groups/${groupId}/members`);
         signal?.addEventListener('abort', () => {
-            API.cancel(promise, "canceled albums get");
+            API.cancel(promise, "canceled members get");
+        });
+        return promise;
+    });
+
+    // get group to check if invite is still possible
+    const group = useQuery(['group', groupId], ({ signal }) => {
+        const promise = API.get('blob-images', `/groups/${groupId}`);
+        signal?.addEventListener('abort', () => {
+            API.cancel(promise, "canceled group get");
         });
         return promise;
     });
@@ -74,7 +83,10 @@ export default function MemberPage({ path, groupId }) {
         return enhancedMembersData;
     }, [members.data]);
 
-    const userMayInvite = !!membersData?.find(mem => (mem.isCurrent && mem.userRole !== 'guest' && mem.status !== 'invite'));
+    const userMayInvite = !!membersData?.find(mem => (
+        mem.isCurrent && mem.userRole !== 'guest' && mem.status !== 'invite'
+    ));
+    const groupSizeBelowMax = !(group.data) && (group.data.memberCount < group.data.maxMembers);
     return (
         <Protected>
             <GroupHeader path={path} groupId={groupId} />
@@ -83,11 +95,12 @@ export default function MemberPage({ path, groupId }) {
                 {(userMayInvite) && <Box sx={barStyle}>
                     <Button
                         variant='outlined'
+                        disabled={!groupSizeBelowMax}
                         color='primary'
                         href={`/groups/${groupId}/members/invite`}
                         sx={noTransform}
                         startIcon={<GroupAdd />}>
-                        Nieuwe leden uitnodigen
+                        {(groupSizeBelowMax)? 'Nieuwe leden uitnodigen' : '(maximum aantal leden)'}
                     </Button>
                 </Box>}
                 <Grid container spacing={2}>
