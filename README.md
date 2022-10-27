@@ -240,6 +240,11 @@ This is implemented as follows
 
 ### Personal pages
 The following pages (routes) show a personal header:
+- [ ] `/invites`
+    - [ ] create backend function to retrieve open invites
+    - [ ] only show invites in tabs if > 0 invites
+    - [ ] create invites/index page
+    - [ ] check functioning of backroutes/ protected etc
 - `/groups`
 - `/photos`
 - `/profile`
@@ -251,6 +256,8 @@ These pages import a `PersonalHeader` component, shown at the top of the page. T
 
 The regular page content is shown below the personal header.
 - Groups: Regular content = Group list
+- [ ] remove sort button from groups
+- [ ] fallback if there are no groups
 
 #### Group card
 - [x] shows group image
@@ -259,6 +266,14 @@ The regular page content is shown below the personal header.
 - [x] shows # albums + # members
     - [x] only if included in group data
 - [x] card is clickable - to group page
+
+### Group page (= Albums Tab)
+Tabs are
+- [x] albums
+    - [ ] new album
+        - [ ] only if user is admin of the group - need to get membership for this
+- [ ] members
+- [ ] group profile
 
 ### Members page
 - [x] get members with API
@@ -275,16 +290,25 @@ The regular page content is shown below the personal header.
 - [x] current user has badge
 - [x] founder has badge
 
-In original:
-- menu is set for the entire list
-- when button is clicked on a line, the anchor is passed to that button + member details are passed to anchor state
-- the member record contains info on the options that the current user has for that member. Options may include:
-    - leave (user can apply to themselves)
-    - guestify (of another user)
-    - adminify
-    - founderify
-    - ban
-    - uninvite
+Setup:
+- members index renders following components:
+    - GroupHeader, which queries group info
+    - MembersMain (in same file) - which
+        - queries members and group
+        - holds the menu-anchor in state
+        - renders menu for the entire list
+        - when button is clicked on a line, the anchor is passed to that button + member details are passed to anchor state
+- MemberMenu
+    - the member record contains info on the options that the current user has for that member Options may include:
+        - leave (user can apply to themselves)
+        - guestify (of another user)
+        - adminify
+        - founderify
+        - ban
+        - uninvite
+    - shows confirmation dialog for leave, founderify, ban, uninvite options
+    - after confirmation, APIs are called from within this component
+    - after succesful calls, queries are invalidated
 
 ### Members invite page
 - [x] Ensure that backroute still works + current route
@@ -295,21 +319,6 @@ In original:
 - [x] state for success or error
 - [x] content for success or error with links
 - [x] api call (useQuery?) to invite
-
-### Group page
-Tabs are
-- [x] albums
-    - [ ] remove sort
-    - [ ] new album
-        - [ ] only if user is admin of the group - need to get membership for this
-- [ ] members
-- [ ] group profile
-
-
-### Albums page
-- [ ] sort
-- [ ] new album
-- [ ] album is clickable
 
 ### Album page
 - [ ] Album header

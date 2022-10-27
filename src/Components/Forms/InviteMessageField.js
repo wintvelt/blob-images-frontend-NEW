@@ -1,7 +1,7 @@
 import TextField from '@mui/material/TextField';
 import { useController } from "react-hook-form";
 
-export default function InviteMessageField({ control, fieldName = 'name', size = 'normal' }) {
+export default function InviteMessageField({ control, fieldName = 'message', size = 'normal' }) {
     const {
         field: { onChange, onBlur, name, value, ref },
         fieldState: { invalid, isTouched, isDirty },

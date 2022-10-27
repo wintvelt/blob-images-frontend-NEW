@@ -90,7 +90,9 @@ function PersonalHeader({ path }) {
             </Box>
             <Box sx={tabBarStyle}>
                 <Container maxWidth='lg'>
-                    <Tabs value={activeTab}>
+                    <Tabs value={activeTab}
+                        variant="scrollable"
+                        scrollButtons="auto">
                         <LinkTab title="Waar ik lid ben" value='groups' label='Mijn groepen' href='/groups' />
                         <LinkTab title="Mijn eigen foto's" label="Foto's" value='photos' href='/photos' />
                         <LinkTab title="Naam, profielfoto en achtergrond" label="Profiel" value='profile' href='/profile' />

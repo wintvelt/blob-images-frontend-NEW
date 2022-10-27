@@ -68,7 +68,7 @@ export default function InviteForm({ groupName, groupId, allowance = 1, memberMa
         try {
             // submit stuff
             const invites = [
-                { name: data.inviteeName, email: data.inviteeEmail, admin: inviteeAdmin },
+                { name: data.inviteeName, email: data.inviteeEmail, admin: data.inviteeAdmin },
                 ...data.invitees
             ];
             const promises = invites.map(invite => (
@@ -83,7 +83,7 @@ export default function InviteForm({ groupName, groupId, allowance = 1, memberMa
             ))
             await Promise.all(promises)
             toast.success('Gelukt!')
-            setInviteState({ isSuccess: true, numSent: invites.length + 1 })
+            setInviteState({ isSuccess: true, numSent: invites.length })
         } catch (error) {
             toast.error('😢 er ging iets mis');
             setInviteState({ isError: true, message: error.message })
@@ -116,7 +116,7 @@ export default function InviteForm({ groupName, groupId, allowance = 1, memberMa
                     {(mayInviteMore) && <Button fullWidth onClick={() => append({ name: '' })}>
                         Nog iemand uitnodigen
                     </Button>}
-                    <InviteMessageField control={control} />
+                    <InviteMessageField control={control} fieldName='message'/>
                     <Button
                         type="submit"
                         fullWidth
@@ -130,7 +130,8 @@ export default function InviteForm({ groupName, groupId, allowance = 1, memberMa
                 </>}
                 {(inviteState.isSuccess) && <Box sx={{ mx: { xs: '1rem', md: '4rem' } }}>
                     <Typography variant='body1' sx={{ mt: '2rem' }}>
-                        {inviteState.numSent} uitnodigingen zijn verzonden.
+                        {inviteState.numSent} uitnodiging{(inviteState.numSent !==1) && 'en'} 
+                        zijn verzonden.
                         Zodra de ontvangers gereageerd hebben, krijg je hiervan bericht.
                     </Typography>
                     <Typography variant='body1' sx={{ my: '1rem' }}>

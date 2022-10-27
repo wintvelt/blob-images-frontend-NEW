@@ -65,7 +65,7 @@ const LinkTab = ({ value, label, title, ...linkProps }) => (
 )
 
 function GroupHeader({ path, groupId }) {
-    const group = useQuery(['groups', groupId], ({ signal }) => {
+    const group = useQuery(['group', groupId], ({ signal }) => {
         const promise = API.get('blob-images', `/groups/${groupId}`);
         signal?.addEventListener('abort', () => {
             API.cancel(promise, "canceled groups get");

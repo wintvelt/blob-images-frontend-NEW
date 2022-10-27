@@ -24,7 +24,7 @@ const HomeIcon = () => <>
 const backrouteStyle = { display: 'flex', textDecoration: 'none' };
 
 const BackRoute = ({ groupId, albumId, backRoute }) => {
-    const group = useQuery(['groups', groupId], ({ signal }) => {
+    const group = useQuery(['group', groupId], ({ signal }) => {
         const promise = API.get('blob-images', `/groups/${groupId}`);
         signal?.addEventListener('abort', () => {
             API.cancel(promise, "canceled group get");

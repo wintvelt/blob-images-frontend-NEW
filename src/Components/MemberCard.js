@@ -18,15 +18,17 @@ const MemberName = ({ name }) => {
 }
 
 const MemberCard = ({
-    name, email, since = 'ooit',
+    memberId, name, email, since = 'ooit',
     photoUrl,
     userRole = 'guest', isFounder = false,
     status = 'active',
     isCurrent = false,
-    options = []
+    options = [],
+    onClickMenu
 }) => {
     const src = makeImageUrl(photoUrl, 128);
     const hasOptions = (options.length > 0);
+    const handleClick = (e) => onClickMenu({ el: e.target, options, memberId })
     return <Paper className={styles.memberCard}>
         <Avatar className={styles.avatar} src={src}>{name.slice(0, 2)}</Avatar>
         <div className={styles.wrapper}>
@@ -37,7 +39,8 @@ const MemberCard = ({
                     {(userRole === 'admin') ? '(admin)' : '(gast)'}
                 </Typography>}
                 <div className={styles.filler} />
-                <IconButton className={styles.editButton} color='primary' disabled={!hasOptions}>
+                <IconButton className={styles.editButton} color='primary' disabled={!hasOptions}
+                    onClick={handleClick}>
                     {(hasOptions) && <EditIcon />}
                 </IconButton>
             </div>

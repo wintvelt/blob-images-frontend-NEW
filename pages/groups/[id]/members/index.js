@@ -12,6 +12,8 @@ import LoadingBlock from '../../../../src/Components/LoadingBlock';
 import { API } from 'aws-amplify';
 import { useQuery } from '@tanstack/react-query';
 import MemberCard from '../../../../src/Components/MemberCard';
+import MemberMenu from '../../../../src/Components/MemberMenu';
+import Link from '../../../../src/Components/Link';
 
 
 const barStyle = {
@@ -47,7 +49,7 @@ const memberSort = (a, b) => (
                     : (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0
 )
 
-export default function MemberPage({ path, groupId }) {
+const MembersMain = ({ path, groupId }) => {
     const members = useQuery(['members', groupId], ({ signal }) => {
         const promise = API.get('blob-images', `/groups/${groupId}/members`);
         signal?.addEventListener('abort', () => {
@@ -65,8 +67,9 @@ export default function MemberPage({ path, groupId }) {
         return promise;
     });
 
-    const open = false;
-    const handleClickNew = () => alert('clicked')
+    const [anchor, setAnchor] = React.useState({ el: null })
+
+    const onClickMenu = ({ el, options, memberId }) => setAnchor({ el, options, memberId })
 
     const membersData = React.useMemo(() => {
         if (!members.data) return null;
@@ -87,44 +90,52 @@ export default function MemberPage({ path, groupId }) {
         mem.isCurrent && mem.userRole !== 'guest' && mem.status !== 'invite'
     ));
     const groupSizeBelowMax = (group.data) && (group.data.memberCount < group.data.maxMembers);
+    return <>{members.isLoading && <LoadingBlock />}
+        {members.isSuccess && <Container maxWidth='lg'>
+            {(userMayInvite) && <Box sx={barStyle}>
+                <Button
+                    component={Link}
+                    variant='outlined'
+                    disabled={!groupSizeBelowMax}
+                    color='primary'
+                    href={`/groups/${groupId}/members/invite`}
+                    sx={noTransform}
+                    startIcon={<GroupAdd />}>
+                    {(groupSizeBelowMax) ? 'Nieuwe leden uitnodigen' : '(maximum aantal leden)'}
+                </Button>
+            </Box>}
+            <Grid container spacing={2}>
+                {membersData.map(member => (
+                    (member.isHeader) ?
+                        <Grid item xs={12} key={member.cat}>
+                            <Typography variant='subtitle1' sx={subHeaderStyle}>
+                                {(member.cat === 'admin') ? 'Admin leden'
+                                    : (members.cat === 'guest') ? 'Gasten' : 'Uitgenodigd'}
+                            </Typography>
+                        </Grid>
+                        : <Grid item xs={12} md={4} key={member.PK}>
+                            <MemberCard memberId={member.PK.slice(2)}
+                                name={member.name} email={member.email} since={member.createdAt}
+                                photoUrl={member.photoUrl}
+                                userRole={member.userRole} status={member.status}
+                                isFounder={member.isFounder}
+                                isCurrent={member.isCurrent}
+                                options={member.options}
+                                onClickMenu={onClickMenu} />
+                        </Grid>
+                ))}
+            </Grid>
+            <MemberMenu anchor={anchor} setAnchor={setAnchor}
+                groupId={groupId} />
+        </Container>}
+    </>
+}
+
+export default function MemberPage({ path, groupId }) {
     return (
         <Protected>
             <GroupHeader path={path} groupId={groupId} />
-            {members.isLoading && <LoadingBlock />}
-            {members.isSuccess && <Container maxWidth='lg'>
-                {(userMayInvite) && <Box sx={barStyle}>
-                    <Button
-                        variant='outlined'
-                        disabled={!groupSizeBelowMax}
-                        color='primary'
-                        href={`/groups/${groupId}/members/invite`}
-                        sx={noTransform}
-                        startIcon={<GroupAdd />}>
-                        {(groupSizeBelowMax)? 'Nieuwe leden uitnodigen' : '(maximum aantal leden)'}
-                    </Button>
-                </Box>}
-                <Grid container spacing={2}>
-                    {membersData.map(member => (
-                        (member.isHeader) ?
-                            <Grid item xs={12} key={member.cat}>
-                                <Typography variant='subtitle1' sx={subHeaderStyle}>
-                                    {(member.cat === 'admin') ? 'Admin leden'
-                                        : (members.cat === 'guest') ? 'Gasten' : 'Uitgenodigd'}
-                                </Typography>
-                            </Grid>
-                            : <Grid item xs={12} md={4} key={member.PK}>
-                                <MemberCard groupId={member.SK}
-                                    name={member.name} email={member.email} since={member.createdAt}
-                                    photoUrl={member.photoUrl}
-                                    userRole={member.userRole} status={member.status}
-                                    isFounder={member.isFounder}
-                                    isCurrent={member.isCurrent}
-                                    options={member.options} />
-                            </Grid>
-                    ))}
-                </Grid>
-                <pre>{JSON.stringify(membersData, null, 2)}</pre>
-            </Container>}
+            <MembersMain path={path} groupId={groupId} />
         </Protected>
     )
 }
