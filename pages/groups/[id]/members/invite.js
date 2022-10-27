@@ -66,8 +66,8 @@ export default function MemberInvitePage({ path, groupId }) {
         return promise;
     });
 
-    const membersData = React.useMemo(() => {
-        if (!members.data) return null;
+    const [membersData, memberMails] = React.useMemo(() => {
+        if (!members.data) return [null, null];
         let enhancedMembersData = [];
         let currentCat = undefined;
         members.data.sort(memberSort).forEach(mem => {
@@ -78,14 +78,19 @@ export default function MemberInvitePage({ path, groupId }) {
             }
             enhancedMembersData.push(mem);
         });
-        return enhancedMembersData;
+        const mails = members.data
+            .filter(mem => mem.status !== 'invite')
+            .map(mem => mem.email)
+        return [enhancedMembersData, mails];
     }, [members.data]);
 
     const groupPhoto = makeImageUrl(group.data?.photo?.url, 500);
+    const allowance = (group.data && (group.data.maxMembers - group.data.memberCount));
+
     return (
         <Protected>
             <InviteWrapper background={groupPhoto} narrow={true}>
-                <InviteForm groupName={group.data?.name}/>
+                <InviteForm groupName={group.data?.name} allowance={allowance} memberMails={memberMails} />
             </InviteWrapper>
         </Protected>
     )

@@ -86,7 +86,7 @@ export default function MemberPage({ path, groupId }) {
     const userMayInvite = !!membersData?.find(mem => (
         mem.isCurrent && mem.userRole !== 'guest' && mem.status !== 'invite'
     ));
-    const groupSizeBelowMax = !(group.data) && (group.data.memberCount < group.data.maxMembers);
+    const groupSizeBelowMax = (group.data) && (group.data.memberCount < group.data.maxMembers);
     return (
         <Protected>
             <GroupHeader path={path} groupId={groupId} />

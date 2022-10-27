@@ -14,7 +14,7 @@ import EmailField from './EmailField';
 import InviteAdminField from './InviteAdminField';
 import InviteMessageField from './InviteMessageField';
 
-const InviteeFormLine = ({ control, i, remove }) => {
+const InviteeFormLine = ({ control, i, remove, getValues, memberMails }) => {
     const nameFieldName = (i > -1) ? `invitees.${i}.name` : 'inviteeName';
     const emailFieldName = (i > -1) ? `invitees.${i}.email` : 'inviteeEmail';
     const adminFieldName = (i > -1) ? `invitees.${i}.admin` : 'inviteeAdmin';
@@ -24,7 +24,8 @@ const InviteeFormLine = ({ control, i, remove }) => {
                 reqHelper='Vul een naam in' />
         </Grid>
         <Grid item xs={5} md={5}>
-            <EmailField control={control} fieldName={emailFieldName} size='small' />
+            <EmailField control={control} fieldName={emailFieldName} size='small'
+                getValues={getValues} memberMails={memberMails} />
         </Grid>
         <Grid item xs={1} md={1}>
             <InviteAdminField control={control} fieldName={adminFieldName} showLabel={(i === -1)} />
@@ -38,8 +39,8 @@ const InviteeFormLine = ({ control, i, remove }) => {
 }
 const formStyle = { mt: 2, width: '100%' }
 
-export default function InviteForm({ onInvite, groupName }) {
-    const { handleSubmit, control, setError, setFocus } = useForm({
+export default function InviteForm({ onInvite, groupName, allowance = 1, memberMails }) {
+    const { handleSubmit, control, setError, setFocus, getValues } = useForm({
         defaultValues: { inviteText: '' }
     });
     const { fields, append, remove } = useFieldArray({
@@ -48,6 +49,9 @@ export default function InviteForm({ onInvite, groupName }) {
         defaultValues: { admin: true }
     });
     const [isLoading, setIsLoading] = React.useState(false);
+    const mayInviteMore = (allowance - fields.length) > 1;
+
+    // const emails = watch({ control, name: ['inviteeEmail', 'invitees'] });
 
     // because autofocus does not work
     React.useEffect(() => {
@@ -78,13 +82,14 @@ export default function InviteForm({ onInvite, groupName }) {
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}
                 sx={formStyle}>
-                <InviteeFormLine i={-1} control={control} />
+                <InviteeFormLine i={-1} control={control} memberMails={memberMails} />
                 {fields.map((item, index) => (
-                    <InviteeFormLine key={item.id} i={index} control={control} remove={remove} />
+                    <InviteeFormLine key={item.id} i={index} control={control} remove={remove}
+                        getValues={getValues} memberMails={memberMails} />
                 ))}
-                <Button fullWidth onClick={() => append({ name: '' })}>
+                {(mayInviteMore) && <Button fullWidth onClick={() => append({ name: '' })}>
                     Nog iemand uitnodigen
-                </Button>
+                </Button>}
                 <InviteMessageField control={control} />
                 <Button
                     type="submit"
@@ -97,6 +102,8 @@ export default function InviteForm({ onInvite, groupName }) {
                     {isLoading ? <CircularProgress size='1.75rem' /> : 'Verstuur'}
                 </Button>
             </Box>
+            <pre>watched</pre>
+            {/* <pre>{JSON.stringify(emails, null, 2)}</pre> */}
         </>
     );
 }
