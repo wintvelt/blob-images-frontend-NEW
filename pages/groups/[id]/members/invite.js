@@ -7,50 +7,13 @@ import Typography from '@mui/material/Typography';
 import GroupAdd from '@mui/icons-material/GroupAdd';
 import { getSSRUser, Protected } from '../../../../src/Components/Protected';
 import { getSSRRoute } from '../../../../src/utils/route-helper';
-import GroupHeader from '../../../../src/Components/GroupHeader';
-import LoadingBlock from '../../../../src/Components/LoadingBlock';
 import { API } from 'aws-amplify';
 import { useQuery } from '@tanstack/react-query';
-import MemberCard from '../../../../src/Components/MemberCard';
 import InviteWrapper from '../../../../src/Components/Forms/InviteWrapper';
 import { makeImageUrl } from '../../../../src/utils/image-helper';
 import InviteForm from '../../../../src/Components/Forms/InviteForm';
 
-
-const barStyle = {
-    my: 2,
-    // backgroundColor: '#eeeeee',
-    display: 'flex',
-    gap: '1rem',
-    justifyContent: 'flex-end'
-};
-
-const noTransform = { textTransform: 'none' }
-const subHeaderStyle = { mt: 1, mb: -1 }
-
-// helpers for sorting members and creating subheaders
-const membersCat = (mem) => {
-    if (mem.status === 'invite') return 'invite'
-    if (mem.userRole === 'admin') return 'admin'
-    return 'guest'
-}
-const memberSort = (a, b) => (
-    (a.status === 'invite') ?
-        (b.status === 'invite') ?
-            (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0
-            : 1
-        : (b.status === 'invite') ?
-            -1
-            : (a.userRole === 'admin') ?
-                (b.userRole === 'admin') ?
-                    (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0
-                    : -1
-                : (b.userRole === 'admin') ?
-                    1
-                    : (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0
-)
-
-export default function MemberInvitePage({ path, groupId }) {
+export default function MemberInvitePage({ groupId }) {
     const members = useQuery(['members', groupId], ({ signal }) => {
         const promise = API.get('blob-images', `/groups/${groupId}/members`);
         signal?.addEventListener('abort', () => {
@@ -66,22 +29,12 @@ export default function MemberInvitePage({ path, groupId }) {
         return promise;
     });
 
-    const [membersData, memberMails] = React.useMemo(() => {
-        if (!members.data) return [null, null];
-        let enhancedMembersData = [];
-        let currentCat = undefined;
-        members.data.sort(memberSort).forEach(mem => {
-            const memCat = membersCat(mem);
-            if (memCat !== currentCat) {
-                enhancedMembersData.push({ isHeader: true, cat: memCat });
-                currentCat = memCat;
-            }
-            enhancedMembersData.push(mem);
-        });
+    const memberMails = React.useMemo(() => {
+        if (!members.data) return null;
         const mails = members.data
             .filter(mem => mem.status !== 'invite')
             .map(mem => mem.email)
-        return [enhancedMembersData, mails];
+        return mails;
     }, [members.data]);
 
     const groupPhoto = makeImageUrl(group.data?.photo?.url, 500);
@@ -90,7 +43,9 @@ export default function MemberInvitePage({ path, groupId }) {
     return (
         <Protected>
             <InviteWrapper background={groupPhoto} narrow={true}>
-                <InviteForm groupName={group.data?.name} allowance={allowance} memberMails={memberMails} />
+                <InviteForm groupName={group.data?.name} groupId={groupId}
+                    allowance={allowance}
+                    memberMails={memberMails} />
             </InviteWrapper>
         </Protected>
     )

@@ -292,9 +292,9 @@ In original:
     - [x] name, email, text
     - [x] validations
 - [x] check for max members
-- [ ] state for success or error
-- [ ] content for success or error with links
-- [ ] api call (useQuery) to invite
+- [x] state for success or error
+- [x] content for success or error with links
+- [x] api call (useQuery?) to invite
 
 ### Group page
 Tabs are

@@ -13,6 +13,11 @@ import NameField from './NameField';
 import EmailField from './EmailField';
 import InviteAdminField from './InviteAdminField';
 import InviteMessageField from './InviteMessageField';
+import Link from '../Link';
+import { API } from 'aws-amplify';
+
+// debug helper
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 const InviteeFormLine = ({ control, i, remove, getValues, memberMails }) => {
     const nameFieldName = (i > -1) ? `invitees.${i}.name` : 'inviteeName';
@@ -39,8 +44,8 @@ const InviteeFormLine = ({ control, i, remove, getValues, memberMails }) => {
 }
 const formStyle = { mt: 2, width: '100%' }
 
-export default function InviteForm({ onInvite, groupName, allowance = 1, memberMails }) {
-    const { handleSubmit, control, setError, setFocus, getValues } = useForm({
+export default function InviteForm({ groupName, groupId, allowance = 1, memberMails }) {
+    const { handleSubmit, control, setFocus, getValues } = useForm({
         defaultValues: { inviteText: '' }
     });
     const { fields, append, remove } = useFieldArray({
@@ -48,10 +53,10 @@ export default function InviteForm({ onInvite, groupName, allowance = 1, memberM
         name: 'invitees',
         defaultValues: { admin: true }
     });
-    const [isLoading, setIsLoading] = React.useState(false);
     const mayInviteMore = (allowance - fields.length) > 1;
 
-    // const emails = watch({ control, name: ['inviteeEmail', 'invitees'] });
+    const [isLoading, setIsLoading] = React.useState(false);
+    const [inviteState, setInviteState] = React.useState({ isInitial: true })
 
     // because autofocus does not work
     React.useEffect(() => {
@@ -62,9 +67,26 @@ export default function InviteForm({ onInvite, groupName, allowance = 1, memberM
         setIsLoading(true);
         try {
             // submit stuff
-            setIsLoading(false);
+            const invites = [
+                { name: data.inviteeName, email: data.inviteeEmail, admin: inviteeAdmin },
+                ...data.invitees
+            ];
+            const promises = invites.map(invite => (
+                API.post('blob-images', `/groups/${groupId}/invite`, {
+                    body: {
+                        toName: invite.name,
+                        toEmail: invite.email,
+                        message: data.message,
+                        role: (invite.admin) ? 'admin' : 'guest'
+                    }
+                })
+            ))
+            await Promise.all(promises)
+            toast.success('Gelukt!')
+            setInviteState({ isSuccess: true, numSent: invites.length + 1 })
         } catch (error) {
-            toast.error(error)
+            toast.error('😢 er ging iets mis');
+            setInviteState({ isError: true, message: error.message })
             setIsLoading(false);
         }
     };
@@ -72,38 +94,71 @@ export default function InviteForm({ onInvite, groupName, allowance = 1, memberM
     return (
         <>
             <Avatar sx={{ m: 1, bgcolor: (t) => t.palette.grey[300] }}>
-                ✍️
+                {(inviteState.isError) ? '😳' : '✍️'}
             </Avatar>
             <Typography component="h1" variant="h5" gutterBottom>
-                Leden uitnodigen
+                {(inviteState.isInitial) ? 'Leden uitnodigen'
+                    : (inviteState.isSuccess) ? 'Uitnodiging verzonden'
+                        : 'Verzenden mislukt'
+                }
             </Typography>
             <Typography variant='body'>
                 Voor {groupName}
             </Typography>
             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}
                 sx={formStyle}>
-                <InviteeFormLine i={-1} control={control} memberMails={memberMails} />
-                {fields.map((item, index) => (
-                    <InviteeFormLine key={item.id} i={index} control={control} remove={remove}
-                        getValues={getValues} memberMails={memberMails} />
-                ))}
-                {(mayInviteMore) && <Button fullWidth onClick={() => append({ name: '' })}>
-                    Nog iemand uitnodigen
-                </Button>}
-                <InviteMessageField control={control} />
-                <Button
-                    type="submit"
-                    fullWidth
-                    variant="contained"
-                    color="secondary"
-                    sx={{ mt: 3, mb: 2 }}
-                    disabled={isLoading}
-                >
-                    {isLoading ? <CircularProgress size='1.75rem' /> : 'Verstuur'}
-                </Button>
+                {(inviteState.isInitial) && <>
+                    <InviteeFormLine i={-1} control={control} memberMails={memberMails} />
+                    {fields.map((item, index) => (
+                        <InviteeFormLine key={item.id} i={index} control={control} remove={remove}
+                            getValues={getValues} memberMails={memberMails} />
+                    ))}
+                    {(mayInviteMore) && <Button fullWidth onClick={() => append({ name: '' })}>
+                        Nog iemand uitnodigen
+                    </Button>}
+                    <InviteMessageField control={control} />
+                    <Button
+                        type="submit"
+                        fullWidth
+                        variant="contained"
+                        color="secondary"
+                        sx={{ mt: 3, mb: 2 }}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? <CircularProgress size='1.75rem' /> : 'Verstuur'}
+                    </Button>
+                </>}
+                {(inviteState.isSuccess) && <Box sx={{ mx: { xs: '1rem', md: '4rem' } }}>
+                    <Typography variant='body1' sx={{ mt: '2rem' }}>
+                        {inviteState.numSent} uitnodigingen zijn verzonden.
+                        Zodra de ontvangers gereageerd hebben, krijg je hiervan bericht.
+                    </Typography>
+                    <Typography variant='body1' sx={{ my: '1rem' }}>
+                        Op deze pagina is niet zoveel meer te doen.
+                        Ga anders terug naar de groepspagina.
+                    </Typography>
+                    <Link href={`/groups/${groupId}`} data-cy='invite-success'>
+                        → Ga naar {groupName}
+                    </Link>
+                </Box>}
+                {(inviteState.isError) && <Box sx={{ mx: { xs: '1rem', md: '4rem' } }}>
+                    <Typography variant='body1' sx={{ mt: '2rem' }}>
+                        Helaas, het is niet gelukt om de uitnodigingen te verzenden.
+                        De foutmelding is {JSON.stringify(inviteState.message)}
+                    </Typography>
+                    <Typography variant='body1' sx={{ my: '1rem' }}>
+                        Probeer het anders later nog een keer.
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <Link href={`/groups/${groupId}`} data-cy='invite-success'>
+                            → Ga naar {groupName}
+                        </Link>
+                        <Button onClick={() => setInviteState({ isInitial: true })}>
+                            Probeer opnieuw
+                        </Button>
+                    </Box>
+                </Box>}
             </Box>
-            <pre>watched</pre>
-            {/* <pre>{JSON.stringify(emails, null, 2)}</pre> */}
         </>
     );
 }
