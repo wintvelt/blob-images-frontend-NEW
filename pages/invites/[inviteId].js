@@ -7,6 +7,7 @@ import { useRouter } from 'next/router';
 import { makeImageUrl } from '../../src/utils/image-helper';
 import ErrorBlock from '../../src/Components/InviteError';
 import InviteBlock from '../../src/Components/InviteBlock';
+import LoadingBlock from '../../src/Components/LoadingBlock';
 
 // get groupID from inviteId for errors (when invite is not passed from server)
 const btoa = (b) => Buffer.from(b, 'base64').toString();
@@ -26,7 +27,8 @@ export default function InvitePage(props) {
     const groupId = parseGroupId(props.inviteId);
 
     React.useEffect(() => {
-        if (user.isAuthenticated !== props.user.isAuthenticated) {
+        if (props.user.isAuthenticated && !user.isAuthenticated) {
+            // user has logged out
             router.reload();
         };
     }, [user.isAuthenticated])
@@ -36,10 +38,15 @@ export default function InvitePage(props) {
         '/invite-error.jpg'
         : (groupPhotoUrl) ? makeImageUrl(groupPhotoUrl, 690) : '/invite-bg.jpg';
 
+    const showStuff = (user.isAuthenticated === props.user.isAuthenticated);
+
     return (
         <InviteWrapper background={bgImage}>
-            {props.inviteResult && <InviteBlock invite={props.inviteResult} inviteId={props.inviteId} user={user} />}
-            {props.error && <ErrorBlock error={props.error} groupId={groupId} user={user} />}
+            {showStuff && props.inviteResult &&
+                <InviteBlock invite={props.inviteResult} inviteId={props.inviteId} user={user} />}
+            {showStuff && props.error &&
+                <ErrorBlock error={props.error} groupId={groupId} user={user} />}
+            {!showStuff && <LoadingBlock />}
         </InviteWrapper>
     );
 }
