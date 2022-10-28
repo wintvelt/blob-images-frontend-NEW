@@ -26,11 +26,12 @@ const InviteeFormLine = ({ control, i, remove, getValues, memberMails }) => {
     return <Grid container spacing={{ xs: 1, md: 2 }}>
         <Grid item xs={5} md={5}>
             <NameField control={control} fieldName={nameFieldName} size='small'
-                reqHelper='Vul een naam in' />
+                reqHelper='Vul een naam in' data-cy={nameFieldName} />
         </Grid>
         <Grid item xs={5} md={5}>
             <EmailField control={control} fieldName={emailFieldName} size='small'
-                getValues={getValues} memberMails={memberMails} />
+                getValues={getValues} memberMails={memberMails}
+                data-cy={emailFieldName} />
         </Grid>
         <Grid item xs={1} md={1}>
             <InviteAdminField control={control} fieldName={adminFieldName} showLabel={(i === -1)} />
@@ -113,10 +114,11 @@ export default function InviteForm({ groupName, groupId, allowance = 1, memberMa
                         <InviteeFormLine key={item.id} i={index} control={control} remove={remove}
                             getValues={getValues} memberMails={memberMails} />
                     ))}
-                    {(mayInviteMore) && <Button fullWidth onClick={() => append({ name: '' })}>
-                        Nog iemand uitnodigen
-                    </Button>}
-                    <InviteMessageField control={control} fieldName='message'/>
+                    {(mayInviteMore) &&
+                        <Button fullWidth onClick={() => append({ name: '' })} data-cy='inviteMore'>
+                            Nog iemand uitnodigen
+                        </Button>}
+                    <InviteMessageField control={control} fieldName='message' data-cy='message' />
                     <Button
                         type="submit"
                         fullWidth
@@ -124,24 +126,26 @@ export default function InviteForm({ groupName, groupId, allowance = 1, memberMa
                         color="secondary"
                         sx={{ mt: 3, mb: 2 }}
                         disabled={isLoading}
+                        data-cy='submit'
                     >
                         {isLoading ? <CircularProgress size='1.75rem' /> : 'Verstuur'}
                     </Button>
                 </>}
-                {(inviteState.isSuccess) && <Box sx={{ mx: { xs: '1rem', md: '4rem' } }}>
-                    <Typography variant='body1' sx={{ mt: '2rem' }}>
-                        {inviteState.numSent} uitnodiging{(inviteState.numSent !==1) && 'en'} 
-                        zijn verzonden.
-                        Zodra de ontvangers gereageerd hebben, krijg je hiervan bericht.
-                    </Typography>
-                    <Typography variant='body1' sx={{ my: '1rem' }}>
-                        Op deze pagina is niet zoveel meer te doen.
-                        Ga anders terug naar de groepspagina.
-                    </Typography>
-                    <Link href={`/groups/${groupId}`} data-cy='invite-success'>
-                        → Ga naar {groupName}
-                    </Link>
-                </Box>}
+                {(inviteState.isSuccess) &&
+                    <Box sx={{ mx: { xs: '1rem', md: '4rem' } }} data-cy='success'>
+                        <Typography variant='body1' sx={{ mt: '2rem' }}>
+                            {inviteState.numSent} uitnodiging{(inviteState.numSent !== 1) && 'en'}
+                            zijn verzonden.
+                            Zodra de ontvangers gereageerd hebben, krijg je hiervan bericht.
+                        </Typography>
+                        <Typography variant='body1' sx={{ my: '1rem' }}>
+                            Op deze pagina is niet zoveel meer te doen.
+                            Ga anders terug naar de groepspagina.
+                        </Typography>
+                        <Link href={`/groups/${groupId}`} data-cy='invite-success'>
+                            → Ga naar {groupName}
+                        </Link>
+                    </Box>}
                 {(inviteState.isError) && <Box sx={{ mx: { xs: '1rem', md: '4rem' } }}>
                     <Typography variant='body1' sx={{ mt: '2rem' }}>
                         Helaas, het is niet gelukt om de uitnodigingen te verzenden.

@@ -17,7 +17,7 @@ const GroupCard = ({
   const groupLink = `/groups/${groupId}`
   return <Badge className={styles.badge} badgeContent={newPicsCount} color='secondary'>
     <Link noLinkStyle className={styles.figure} href={groupLink}>
-      <div className={styles.imageframe}>
+      <div className={styles.imageframe} data-cy={`${groupId} groupcard`}>
         <img className={styles.img} src={src} />
         <figcaption className={styles.figcaption}>
           <Typography variant='h5'>

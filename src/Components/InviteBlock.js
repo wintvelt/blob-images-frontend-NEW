@@ -105,7 +105,8 @@ const AcceptedMessage = ({ invite }) => {
     const groupName = invite.group?.name || 'de groep';
     const groupId = invite.SK;
     return <>
-        <Typography variant="h4" align='center' component="h1" gutterBottom>
+        <Typography variant="h4" align='center' component="h1" gutterBottom
+            data-cy='accepted'>
             🍻<br />Welkom!
         </Typography>
         <Typography variant="body1" align='center' component="h1" gutterBottom>
@@ -119,7 +120,8 @@ const DeclinedMessage = ({ invite, user }) => {
     const groupName = invite.group?.name || 'de groep';
     const invitorName = invite.invitation?.from?.name || 'iemand';
     return <>
-        <Typography variant="h4" align='center' component="h1" gutterBottom>
+        <Typography variant="h4" align='center' component="h1" gutterBottom
+            data-cy='rejected'>
             🤜<br />Afgewezen
         </Typography>
         <Typography variant="body1" align='center' component="h1" gutterBottom>
@@ -173,7 +175,7 @@ const InviteBlock = ({ invite, inviteId, user }) => {
             }
         } else {
             // invite must be to email, not userId: otherwise unauth user would not be allowed to accept
-            const email = invite.SK.slice(2);
+            const email = invite.PK.slice(2);
             // redirect to signup and pass inviteId and email
             router.push(`/signup?email=${email}&inviteId=${inviteId}`)
         }

@@ -47,6 +47,7 @@ const MemberCard = ({
                 <div className={styles.filler} />
                 <IconButton className={styles.editButton} color='primary' disabled={!hasOptions}
                     onClick={onClickMenu}
+                    data-cy={`${email} menu`}
                 >
                     {(hasOptions) && <EditIcon />}
                 </IconButton>
@@ -60,7 +61,7 @@ const MemberCard = ({
                 {/* {(photoCount !== undefined) && ` · ${photoCount || 'geen'} foto${(photoCount !== 1) && "'s"}`} */}
             </Typography>
         </div>
-        <MemberMenu anchor={anchor} setAnchor={setAnchor}
+        <MemberMenu anchor={anchor} setAnchor={setAnchor} email={email}
             groupId={groupId} options={options} memberId={memberId} userRole={userRole}/>
     </Paper>
 }

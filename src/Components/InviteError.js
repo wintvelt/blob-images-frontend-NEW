@@ -25,7 +25,7 @@ const ErrorBlock = ({ error, groupId, user }) => {
                 : (error === 'invite not for you') ?
                     (user.isAuthenticated) ? ['Deze uitnodiging is direct geadresseerd aan een ander lid',
                         'Waarschijnlijk niet voor jou, of je moet onder een ander account inloggen']
-                        : ['Deze uitnodiging is direct geadresseerd aan een lid',
+                        : ['Deze uitnodiging is direct geadresseerd aan iemand die al een account heeft',
                             'Log in om de uitnodiging op te halen']
                     : (error === 'invite already accepted') ? ['Je hebt deze uitnodiging al geaccepteerd',
                         'Dus je bent al lid', 'De groep uit deze uitnodiging staat al tussen je groepen']
@@ -42,7 +42,8 @@ const ErrorBlock = ({ error, groupId, user }) => {
 
     return <>
         <Avatar width={40} height={40}>😳</Avatar>
-        <Typography variant="h4" align='center' component="h1" sx={sxMt1} gutterBottom data-cy='error title'>
+        <Typography variant="h4" align='center' component="h1" sx={sxMt1}
+            gutterBottom data-cy={error}>
             {title}
         </Typography>
         <Typography variant="body1" align='center' sx={sxMy1} gutterBottom>

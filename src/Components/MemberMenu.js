@@ -10,7 +10,7 @@ import { toast } from 'react-toastify';
 
 const redStyle = { color: t => t.palette.error.main };
 
-function MemberMenu({ anchor, setAnchor, groupId, options = [], userRole, memberId }) {
+function MemberMenu({ anchor, setAnchor, groupId, options = [], userRole, memberId, email }) {
     const queryClient = useQueryClient(); // to refetch members
     const router = useRouter(); // to leave page after leaving group
 
@@ -85,7 +85,9 @@ function MemberMenu({ anchor, setAnchor, groupId, options = [], userRole, member
             }}
         >
             {options.includes('leave') &&
-                <MenuItem onClick={onItemClick('leave')}>Groep verlaten</MenuItem>}
+                <MenuItem onClick={onItemClick('leave')} data-cy={`${email} leave`}>
+                    Groep verlaten
+                </MenuItem>}
             {options.includes('guestify') &&
                 <MenuItem onClick={onChangeRole}>Maak gast</MenuItem>
             }

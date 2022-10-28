@@ -186,7 +186,7 @@ For auth, pages are (all located in root)
     - [x] if user is logged in
     - [x] if user is not logged in
 - [x] implement decline
-- [ ] tests for accept and decline
+- [x] tests for accept and decline
     - finish test scripts after
         - sending invitations is possible
         - leaving a group is possible

@@ -33,11 +33,11 @@ const DeleteDialog = ({ open, onClose, onDelete, title, lines, abortText, submit
             )}
         </DialogContent>
         <DialogActions>
-            <Button onClick={onClose}>
+            <Button onClick={onClose} data-cy='abort delete'>
                 {abortText}
             </Button>
             <Button onClick={onDelete} variant='contained' color='secondary'
-                sx={deleteStyle}>
+                sx={deleteStyle} data-cy='confirm delete'>
                 {submitText}
             </Button>
         </DialogActions>
