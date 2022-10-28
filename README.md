@@ -272,7 +272,7 @@ Tabs are
 - [x] albums
     - [ ] new album
         - [ ] only if user is admin of the group - need to get membership for this
-- [ ] members
+- [x] members
 - [ ] group profile
 
 ### Members page

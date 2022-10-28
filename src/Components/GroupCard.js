@@ -16,7 +16,7 @@ const GroupCard = ({
   const src = makeImageUrl(photoUrl, 240, 240);
   const groupLink = `/groups/${groupId}`
   return <Badge className={styles.badge} badgeContent={newPicsCount} color='secondary'>
-    <Link noStyleStyle className={styles.figure} href={groupLink}>
+    <Link noLinkStyle className={styles.figure} href={groupLink}>
       <div className={styles.imageframe}>
         <img className={styles.img} src={src} />
         <figcaption className={styles.figcaption}>
