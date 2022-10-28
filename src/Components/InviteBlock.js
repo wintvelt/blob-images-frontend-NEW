@@ -8,6 +8,7 @@ import { CircularProgress } from '@mui/material';
 import { API } from 'aws-amplify';
 import { useRouter } from 'next/router';
 import Link from './Link';
+import { useQueryClient } from '@tanstack/react-query';
 
 // to prevent rerenders
 const sxMb1 = { mb: 1 }
@@ -158,12 +159,14 @@ const ErrorMessage = ({ invite, pageState }) => {
 const InviteBlock = ({ invite, inviteId, user }) => {
     const [pageState, setPageState] = React.useState('open');
     const router = useRouter();
+    const queryClient = useQueryClient(); // to invalidate = reload groups after acceptance
 
     const onAccept = async () => {
         if (user.isAuthenticated) {
             try {
                 // invite can be addressed to any email or to this user
-                // await API.post('blob-images', `/invites/${inviteId}`);
+                await API.post('blob-images', `/invites/${inviteId}`);
+                queryClient.invalidateQueries(["groups"]);
                 setPageState('accepted')
             } catch (error) {
                 setPageState('Error - accept failed')
@@ -174,12 +177,12 @@ const InviteBlock = ({ invite, inviteId, user }) => {
             // redirect to signup and pass inviteId and email
             router.push(`/signup?email=${email}&inviteId=${inviteId}`)
         }
-        setTimeout(() => setPageState('accepted'), 5000)
+        setPageState('accepted')
     }
 
     const onDecline = async () => {
         try {
-            // await API.del('blob-images', `/invites/${inviteId}`);
+            await API.del('blob-images', `/invites/${inviteId}`);
             setPageState('declined')
         } catch (error) {
             setPageState('Error - decline failed')
