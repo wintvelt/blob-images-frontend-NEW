@@ -35,17 +35,21 @@ const membersCat = (mem) => {
 const memberSort = (a, b) => (
     (a.status === 'invite') ?
         (b.status === 'invite') ?
-            (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0
+            (a.name.toLowerCase() < b.name.toLowerCase()) ? -1
+                : (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : 0
             : 1
         : (b.status === 'invite') ?
             -1
             : (a.userRole === 'admin') ?
                 (b.userRole === 'admin') ?
-                    (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0
+                    (a.name.toLowerCase() < b.name.toLowerCase()) ? -1
+                        : (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : 0
                     : -1
                 : (b.userRole === 'admin') ?
                     1
-                    : (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0
+                    : (a.name.toLowerCase() < b.name.toLowerCase()) ? -1
+                        : (a.name.toLowerCase() > b.name.toLowerCase()) ? 1 : 0
+
 )
 
 const MembersMain = ({ path, groupId }) => {

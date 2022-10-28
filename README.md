@@ -284,10 +284,10 @@ Tabs are
     - [x] Name
     - [x] email (clickable)
     - [x] member since
-    - [ ] member options
-        - [ ] make guest/ admin
-        - [ ] appoint founder
-        - [ ] ban from group
+    - [x] member options
+        - [x] make guest/ admin
+        - [x] appoint founder
+        - [x] ban from group
 - [x] current user has badge
 - [x] founder has badge
 
