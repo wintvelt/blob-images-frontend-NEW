@@ -8,6 +8,8 @@ import { makeImageUrl } from '../utils/image-helper'
 import styles from './MemberCard.module.css'
 import Link from './Link';
 import { Chip } from '@mui/material';
+import MemberMenu from './MemberMenu';
+import { useState } from 'react';
 
 const MemberName = ({ name }) => {
     return (name.length > 26) ?
@@ -18,18 +20,21 @@ const MemberName = ({ name }) => {
 }
 
 const MemberCard = ({
+    groupId,
     memberPK, name, email, since = 'ooit',
     photoUrl,
     userRole = 'guest', isFounder = false,
     status = 'active',
     isCurrent = false,
-    options = [],
-    onClickMenu
+    options = []
 }) => {
     const memberId = memberPK.slice(2);
     const src = makeImageUrl(photoUrl, 128);
     const hasOptions = (options.length > 0);
-    const handleClick = (e) => onClickMenu({ el: e.target, options, memberId })
+
+    const [anchor, setAnchor] = useState({ el: null })
+    const onClickMenu = (e) => setAnchor({ el: e.target, options, memberId })
+
     return <Paper className={styles.memberCard}>
         <Avatar className={styles.avatar} src={src}>{name.slice(0, 2)}</Avatar>
         <div className={styles.wrapper}>
@@ -41,7 +46,7 @@ const MemberCard = ({
                 </Typography>}
                 <div className={styles.filler} />
                 <IconButton className={styles.editButton} color='primary' disabled={!hasOptions}
-                onClick={handleClick}
+                    onClick={onClickMenu}
                 >
                     {(hasOptions) && <EditIcon />}
                 </IconButton>
@@ -55,6 +60,8 @@ const MemberCard = ({
                 {/* {(photoCount !== undefined) && ` · ${photoCount || 'geen'} foto${(photoCount !== 1) && "'s"}`} */}
             </Typography>
         </div>
+        <MemberMenu anchor={anchor} setAnchor={setAnchor}
+            groupId={groupId} />
     </Paper>
 }
 

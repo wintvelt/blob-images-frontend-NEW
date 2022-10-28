@@ -12,7 +12,6 @@ import LoadingBlock from '../../../../src/Components/LoadingBlock';
 import { API } from 'aws-amplify';
 import { useQuery } from '@tanstack/react-query';
 import MemberCard from '../../../../src/Components/MemberCard';
-import MemberMenu from '../../../../src/Components/MemberMenu';
 import Link from '../../../../src/Components/Link';
 
 
@@ -67,10 +66,6 @@ const MembersMain = ({ path, groupId }) => {
         return promise;
     });
 
-    const [anchor, setAnchor] = React.useState({ el: null })
-
-    const onClickMenu = ({ el, options, memberId }) => setAnchor({ el, options, memberId })
-
     const membersData = React.useMemo(() => {
         if (!members.data) return null;
         let enhancedMembersData = [];
@@ -115,19 +110,17 @@ const MembersMain = ({ path, groupId }) => {
                         </Grid>
                         : <Grid item xs={12} md={4} key={member.PK}>
                             <MemberCard memberPK={member.PK}
+                                groupId={groupId}
                                 name={member.name} email={member.email} since={member.createdAt}
                                 photoUrl={member.photoUrl}
                                 userRole={member.userRole} status={member.status}
                                 isFounder={member.isFounder}
                                 isCurrent={member.isCurrent}
                                 options={member.options}
-                                onClickMenu={onClickMenu}
                             />
                         </Grid>
                 ))}
             </Grid>
-            <MemberMenu anchor={anchor} setAnchor={setAnchor}
-                groupId={groupId} />
         </Container>}
     </>
 }
