@@ -33,7 +33,7 @@ const MemberCard = ({
     const hasOptions = (options.length > 0);
 
     const [anchor, setAnchor] = useState({ el: null })
-    const onClickMenu = (e) => setAnchor({ el: e.target, options, memberId })
+    const onClickMenu = (e) => setAnchor({ el: e.target })
 
     return <Paper className={styles.memberCard}>
         <Avatar className={styles.avatar} src={src}>{name.slice(0, 2)}</Avatar>
@@ -61,7 +61,7 @@ const MemberCard = ({
             </Typography>
         </div>
         <MemberMenu anchor={anchor} setAnchor={setAnchor}
-            groupId={groupId} />
+            groupId={groupId} options={options} memberId={memberId} userRole={userRole}/>
     </Paper>
 }
 

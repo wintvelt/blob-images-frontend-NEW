@@ -10,8 +10,7 @@ import { toast } from 'react-toastify';
 
 const redStyle = { color: t => t.palette.error.main };
 
-function MemberMenu({ anchor, setAnchor, groupId }) {
-    const options = anchor.options || [];
+function MemberMenu({ anchor, setAnchor, groupId, options = [], userRole, memberId }) {
     const queryClient = useQueryClient(); // to refetch members
     const router = useRouter(); // to leave page after leaving group
 
@@ -23,39 +22,54 @@ function MemberMenu({ anchor, setAnchor, groupId }) {
         setDialog('');
     };
 
+    const apiPath = `/groups/${groupId}/membership/${memberId}`;
+
     const onItemClick = (action) => () => setDialog(action);
     const onConfirm = async () => {
-        const apiPath = `/groups/${groupId}/membership/${anchor.memberId}`;
-        switch (dialog) {
-            case 'leave': {
-                try {
-                    await API.del('blob-images', apiPath);
-                    queryClient.invalidateQueries(['groups']);
-                    queryClient.invalidateQueries([groupId]);
-                    toast.info('Je hebt de groep verlaten');
-                    router.push('/groups');
-                } catch (error) {
-                    console.error(error.response?.data?.error)
-                    toast.error('Groepsexit is niet gelukt');
-                    handleClose();
+        if (['leave', 'ban', 'uninvite'].includes(dialog)) {
+            try {
+                await API.del('blob-images', apiPath);
+                if (dialog === 'leave') {
+                    queryClient.invalidateQueries(['groups']); // remove left group from list
+                    queryClient.invalidateQueries([groupId]); // no rights to this group (or albums etc)
+                } else {
+                    queryClient.invalidateQueries(['members']); // only member list needs updating
                 }
-                break;
+                const message = (dialog === 'leave') ? 'Je hebt de groep verlaten'
+                    : 'Het lid is uit de groep verwijderd';
+                toast.info(message);
+                if (dialog === 'leave') router.push('/groups');
+            } catch (error) {
+                console.error(error.response?.data?.error)
+                toast.error('Groepsexit is niet gelukt');
             }
-            case 'founderify': {
-                break;
+        } else { // dialog = founderify
+            try {
+                await API.put('blob-images', apiPath, {
+                    body: { makeFounder: true }
+                });
+                queryClient.invalidateQueries(['members']); // change member status of me + new founder
+                toast.info('Oprichterstatus is succesvol verhuisd');
+            } catch (error) {
+                console.error(error.response?.data?.error)
+                toast.error('Kon oprichterstatus niet verhuizen 😢');
             }
-            case 'ban': {
-                break;
-            }
-            case 'uninvite': {
-                break;
-            }
-            default:
-                break;
         }
+        handleClose();
     };
-    const onChangeRole = () => {
-        // TODO
+    const onChangeRole = async () => {
+        try {
+            const newRole = (userRole === 'admin') ? 'guest' : 'admin';
+            await API.put('blob-images', apiPath, {
+                body: { newRole }
+            });
+            queryClient.invalidateQueries(['members']); // change member role (and position in list)
+            toast.info('Rol van het lid is aangepast');
+        } catch (error) {
+            console.error(error.response?.data?.error)
+            toast.error('Niet gelukt om rol van dit lid aan te passen');
+        }
+        handleClose();
     };
     const open = Boolean(anchor.el)
     return <>
