@@ -114,14 +114,15 @@ const MembersMain = ({ path, groupId }) => {
                             </Typography>
                         </Grid>
                         : <Grid item xs={12} md={4} key={member.PK}>
-                            <MemberCard memberId={member.PK.slice(2)}
+                            <MemberCard memberPK={member.PK}
                                 name={member.name} email={member.email} since={member.createdAt}
                                 photoUrl={member.photoUrl}
                                 userRole={member.userRole} status={member.status}
                                 isFounder={member.isFounder}
                                 isCurrent={member.isCurrent}
                                 options={member.options}
-                                onClickMenu={onClickMenu} />
+                                onClickMenu={onClickMenu}
+                            />
                         </Grid>
                 ))}
             </Grid>

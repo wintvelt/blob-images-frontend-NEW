@@ -277,8 +277,9 @@ Tabs are
 
 ### Members page
 - [x] get members with API
-- [ ] invite button in top row
-- [ ] member content in list
+- [x] invite button in top row
+    - [x] only if user may invite
+- [x] member content in list
     - [x] Avatar
     - [x] Name
     - [x] email (clickable)

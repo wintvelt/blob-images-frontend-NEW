@@ -18,7 +18,7 @@ const MemberName = ({ name }) => {
 }
 
 const MemberCard = ({
-    memberId, name, email, since = 'ooit',
+    memberPK, name, email, since = 'ooit',
     photoUrl,
     userRole = 'guest', isFounder = false,
     status = 'active',
@@ -26,6 +26,7 @@ const MemberCard = ({
     options = [],
     onClickMenu
 }) => {
+    const memberId = memberPK.slice(2);
     const src = makeImageUrl(photoUrl, 128);
     const hasOptions = (options.length > 0);
     const handleClick = (e) => onClickMenu({ el: e.target, options, memberId })
@@ -40,7 +41,8 @@ const MemberCard = ({
                 </Typography>}
                 <div className={styles.filler} />
                 <IconButton className={styles.editButton} color='primary' disabled={!hasOptions}
-                    onClick={handleClick}>
+                onClick={handleClick}
+                >
                     {(hasOptions) && <EditIcon />}
                 </IconButton>
             </div>
@@ -55,5 +57,7 @@ const MemberCard = ({
         </div>
     </Paper>
 }
+
+MemberCard.whyDidYouRender = true
 
 export default MemberCard
