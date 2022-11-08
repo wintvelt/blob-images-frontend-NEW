@@ -12,7 +12,7 @@ import CodeField from './CodeField';
 import NewPasswordField from './NewPasswordField';
 import { useRouter } from 'next/router';
 
-export default function SetPasswordForm({ email, code }) {
+export default function SetPasswordForm({ email, code, setPageState }) {
     const { handleSubmit, control, trigger, getValues, setError, setFocus } = useForm({
         defaultValues: {
             email: email,
@@ -37,7 +37,7 @@ export default function SetPasswordForm({ email, code }) {
             setIsLoading(true);
             await Auth.forgotPasswordSubmit(email, code, newPassword);
             await Auth.signIn(email, newPassword);
-            PropaneSharp.setPageState({ show: 'success' });
+            setPageState({ show: 'success' });
         } catch (error) {
             console.log(error.message)
             const isInvalidCode = (error.message && error.message.includes('Invalid verification code'))

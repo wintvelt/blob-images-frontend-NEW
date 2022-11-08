@@ -21,28 +21,38 @@ Amplify `Auth` is called in
 - `UserContext`: `.currentAuthenticatedUser()`
 - `Protected` Page wrapper: 
     - `.currentAuthenticatedUser()` in SSR function
-- `CreateAccountForm`: `.completePassword()`
-- `ForgotPasswordForm`: `.forgotPassword()`
+- `CreateAccountForm`: `.completePassword()` - with email, name, tmp password + def password
+- `ForgotPasswordForm`: `.forgotPassword()` - email only (sends mail with code)
 - `LoginForm`: `.signIn()`
 - `SetPasswordForm`:
     - `.SignIn()`
     - `.forgotPassword()`
-    - `.forgotPasswordSubmit()`
+    - `.forgotPasswordSubmit()` - email, code, new psw
 - `NavBar-UserMenu`: `.signOut()`
 
 How this works on load:
-- a page that is loaded *may* receive a `user` prop from the server
+- on load, a page *may* receive a `user` prop from the server
     - a page may include the `Protected` wrapper
     - if so, it should also include the SSR function for user
     - which at server side checks (from the context) if the user is logged in
     - and if so, sends the Auth user as a prop to the page
-- the page prop user contains *only* the Auth info about the user - so e.g. not the photourl
+- the page prop user contains *only* the Auth info about the user - so not user profile with e.g. photourl
 - the page prop is passed as `ssrUser` to the `UserContext`
 - `UserContext` is a context provider that stores user info
 
 This setup with `Context` does not use react-query. So it is OK that the usercontext is rendered outside the QueryContext in `_app`.
 
 Using react-query for user state is not ideal: the fact that the initialstate is provided in props means that we need either a) pass the ssrUser from props down to every component that calls `useUser()` or b) set up complicated stuff with hydration and dehyrdation. For more info, see [here](https://tanstack.com/query/v4/docs/guides/ssr).
+
+What if we do use React Query
+- [ ] a useQuery at top that simply gets currentAuthUser
+    - [ ] remove passing user props to the page from server side
+    - [ ] instead, redirect to login (with destination) if user is not authenticated
+- [ ] make a dependent query that fetches the user profile
+- [ ] 
+
+
+
 
 ### Protected pages
 Every protected page needs
