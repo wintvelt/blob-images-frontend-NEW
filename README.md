@@ -47,12 +47,29 @@ Using react-query for user state is not ideal: the fact that the initialstate is
 What if we do use React Query
 - [ ] a useQuery at top that simply gets currentAuthUser
     - [ ] remove passing user props to the page from server side
-    - [ ] instead, redirect to login (with destination) if user is not authenticated
+    - [ ] instead, on protected pages, redirect to login (with destination) if user is not authenticated
+    - [ ] remove the client side check - BUT TEST!
 - [ ] make a dependent query that fetches the user profile
-- [ ] 
+- [ ] pass the user to all children who need it
 
+CON: re-render of entire page if user logs in/ out or changes profile - but this is likely not often
+PRO: get user data once per page, only 1 render
 
+Why only get user details at top level?
+- second instances of the same query (same key + same function) will trigger *refetch of both instances*, 
+    - see [here in react query docs](https://tanstack.com/query/v4/docs/guides/caching)
+- Which is not what we want. 
+    - Will cause rerender of *all* user instances across app on every new mount of `useQuery(['user'])`
+    - because by default, staleTime = 0, so data on all instances will be considered stale
+- We could increase the staletime, but this is risky - some instance may be logged in, others logged out
 
+V3.0 "Auth on server, client should make requests" - as per T3 Theo ping.gg
+- [ ] rework user Context
+    - [ ] create fetchUser - for useQuery to get user details
+    - [ ] remove context from _app
+- [ ] replace useUser with useQuery
+- [ ] redirect if not auth
+- [ ] remove passing user props on server side
 
 ### Protected pages
 Every protected page needs
