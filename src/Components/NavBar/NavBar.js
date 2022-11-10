@@ -47,6 +47,4 @@ function NavBar(props) {
     );
 }
 
-NavBar.whyDidYouRender = true
-
 export default NavBar

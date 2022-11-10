@@ -12,7 +12,7 @@ const ErrorBlock = ({ error, groupId, user }) => {
         (error === 'invite ID invalid') ? 'Ongeldige uitnodigingscode'
             : (error === 'invite not found') ? 'Uitnodiging niet gevonden'
                 : (error === 'invite not for you') ?
-                    (user.isAuthenticated) ? 'Uitnodiging is niet voor jou' : 'Uitnodiging is voor een lid'
+                    (!!user) ? 'Uitnodiging is niet voor jou' : 'Uitnodiging is voor een lid'
                     : (error === 'invite already accepted') ? 'Uitnodiging al geaccepteerd'
                         : (error === 'invite expired') ? 'Uitnodiging verlopen'
                             : 'Fout bij ophalen uitnodiging';
@@ -23,7 +23,7 @@ const ErrorBlock = ({ error, groupId, user }) => {
                 'Misschien is bijbehorende groep ondertussen opgeheven',
                 'Je kunt het beste degene die je heeft uitgenodigd direct benaderen als je uitnodigingsmail nog hebt']
                 : (error === 'invite not for you') ?
-                    (user.isAuthenticated) ? ['Deze uitnodiging is direct geadresseerd aan een ander lid',
+                    (!!user) ? ['Deze uitnodiging is direct geadresseerd aan een ander lid',
                         'Waarschijnlijk niet voor jou, of je moet onder een ander account inloggen']
                         : ['Deze uitnodiging is direct geadresseerd aan iemand die al een account heeft',
                             'Log in om de uitnodiging op te halen']
@@ -36,7 +36,7 @@ const ErrorBlock = ({ error, groupId, user }) => {
 
     const [href, linkText] = (error === 'invite already accepted') ?
         (groupId) ? [`/groups/${groupId}`, '→ Bekijk de groep'] : ['/groups', '→ Ga naar mijn groepen']
-        : (error === 'invite not for you' && !user.isAuthenticated) ?
+        : (error === 'invite not for you' && !user) ?
             ['/login', '→ Log in']
             : ['', ''];
 

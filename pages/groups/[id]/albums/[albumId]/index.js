@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import Sort from '@mui/icons-material/Sort';
 import Add from '@mui/icons-material/Add';
 import Filter from '@mui/icons-material/FilterAlt';
-import { getSSRUser, Protected } from '../../../../../src/Components/Protected';
+import { isAuthUser } from '../../../../../src/Components/Protected';
 import { getSSRRoute } from '../../../../../src/utils/route-helper';
 import AlbumHeader from '../../../../../src/Components/AlbumHeader';
 import LoadingBlock from '../../../../../src/Components/LoadingBlock';
@@ -46,7 +46,7 @@ export default function AlbumPage({ path, groupId, albumId }) {
     const photos = (albumPhotos.data) ? albumPhotos.data : null
 
     return (
-        <Protected>
+        <>
             <Container maxWidth='lg'>
                 <AlbumHeader path={path} groupId={groupId} albumId={albumId} />
             </Container>
@@ -97,10 +97,10 @@ export default function AlbumPage({ path, groupId, albumId }) {
                     {photos.map((photo, i) => {
                         return <ImageListItem key={photo.SK} sx={{ overflow: 'hidden' }}>
                             <img src={makeImageUrl(photo.photo.url, 300)} />
-                            <ImageListItemBar position='bottom' title={i} sx={{ 
+                            <ImageListItemBar position='bottom' title={i} sx={{
                                 transform: `translateY(100%)`,
-                                '&:hover' : { transform: 'translatey(0)'} 
-                                }} />
+                                '&:hover': { transform: 'translatey(0)' }
+                            }} />
                         </ImageListItem>
                     })}
 
@@ -117,17 +117,18 @@ export default function AlbumPage({ path, groupId, albumId }) {
                     ))}
                 </Grid>
             </Container>}
-        </Protected>
+        </>
     )
 }
 
 export async function getServerSideProps(context) {
-    const user = await getSSRUser(context);
     const routeData = getSSRRoute(context)
-    return {
-        props: {
-            user,
-            ...routeData
+    const isAuthenticated = await isAuthUser(context)
+    return (isAuthenticated) ?
+        {
+            props: {
+                ...routeData
+            }
         }
-    }
+        : { redirect: { destination: '/login' } }
 }

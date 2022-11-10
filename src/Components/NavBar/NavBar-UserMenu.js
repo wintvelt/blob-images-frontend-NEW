@@ -4,11 +4,11 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import ExpandMore from '@mui/icons-material/ExpandMore';
 import { Avatar } from '@mui/material';
-import { useUser } from '../UserContext';
 import { Auth } from 'aws-amplify';
 import { makeImageUrl } from '../../utils/image-helper';
 import { useRouter } from 'next/router';
 import { isProtectedRoute } from '../../utils/route-helper';
+import { useQueryClient } from '@tanstack/react-query';
 
 const avatarStyle = {
     width: '1.5em', height: '1.5em', marginRight: '.5em',
@@ -16,10 +16,10 @@ const avatarStyle = {
 };
 const noTransform = { textTransform: 'none' }
 
-function UserMenu() {
+function UserMenu({ user }) {
     const [anchorEl, setAnchorEl] = useState(null);
-    const { user, setUser } = useUser();
-    const { name } = user;
+    const queryClient = useQueryClient();
+    const name = user?.name || '';
     const router = useRouter();
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -31,15 +31,21 @@ function UserMenu() {
     const handleLogout = async () => {
         try {
             await Auth.signOut();
+            queryClient.setQueryData(['auth'], false)
+            queryClient.removeQueries({ queryKey: ['user'] });
             if (isProtectedRoute(router.pathname)) {
                 const msg = encodeURI("Terug naar homepage omdat je bent uitgelogd");
                 router.push(`/?toast=${msg}`, '/');
             }
+            if (router.pathname.indexOf('/invites/') === 0) {
+                // if we are on invite page, force rerender
+                await queryClient.invalidateQueries({ queryKey: ['invite'] })
+            }
         } catch (error) {
             console.log('error signing out: ', error);
         }
-        setUser({ isAuthenticated: false });
     };
+
     return <>
         <Button
             id="usermenu-button"
@@ -52,7 +58,7 @@ function UserMenu() {
             sx={noTransform}
             endIcon={<ExpandMore />}
         >
-            <Avatar sx={avatarStyle} alt={name} src={makeImageUrl(user.photoUrl, 40, 40)}>
+            <Avatar sx={avatarStyle} alt={name} src={makeImageUrl(user?.photoUrl, 40, 40)}>
                 {name[0]}
             </Avatar>
             {name}
@@ -73,7 +79,5 @@ function UserMenu() {
         </Menu>
     </>
 }
-
-UserMenu.whyDidYouRender = true
 
 export default UserMenu

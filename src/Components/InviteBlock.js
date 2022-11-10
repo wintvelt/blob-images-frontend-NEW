@@ -31,11 +31,11 @@ const expireDate = (dateStr) => {
     return makeStr(expDate);
 };
 
-const OpenInvite = ({ invite, user }) => {
+const OpenInvite = ({ invite = {}, user }) => {
     const addressee = invite.user?.name || 'vreemdeling'
     const addresseeMail = invite.user?.email || 'iemand anders';
     const username = user?.name || addressee;
-    const isDifferentEmail = (user.email && invite.user?.email !== user.email);
+    const isDifferentEmail = (user?.email && invite.user?.email !== user.email);
     const invitedBy = invite.invitation?.from?.name || 'Iemand';
     const groupName = invite.group?.name || 'Een groep';
     const groupDescription = invite.group?.description;
@@ -129,10 +129,10 @@ const DeclinedMessage = ({ invite, user }) => {
             om lid te worden van {groupName} is afgewezen<br />
             {invitorName} is op de hoogte gesteld
         </Typography>
-        {(!user.isAuthenticated) && <Typography variant="body1" align='center' component="h1" gutterBottom>
+        {(!user) && <Typography variant="body1" align='center' component="h1" gutterBottom>
             Ik zie je in de toekomst graag nog eens terug
         </Typography>}
-        {(user.isAuthenticated) && <Link href={`/groups`}>→ Naar mijn groepen</Link>}
+        {(user) && <Link href={`/groups`}>→ Naar mijn groepen</Link>}
     </>
 }
 const ErrorMessage = ({ invite, pageState }) => {
@@ -164,7 +164,7 @@ const InviteBlock = ({ invite, inviteId, user }) => {
     const queryClient = useQueryClient(); // to invalidate = reload groups after acceptance
 
     const onAccept = async () => {
-        if (user.isAuthenticated) {
+        if (!!user) {
             try {
                 // invite can be addressed to any email or to this user
                 await API.post('blob-images', `/invites/${inviteId}`);

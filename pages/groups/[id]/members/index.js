@@ -5,7 +5,7 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import GroupAdd from '@mui/icons-material/GroupAdd';
-import { getSSRUser, Protected } from '../../../../src/Components/Protected';
+import { isAuthUser } from '../../../../src/Components/Protected';
 import { getSSRRoute } from '../../../../src/utils/route-helper';
 import GroupHeader from '../../../../src/Components/GroupHeader';
 import LoadingBlock from '../../../../src/Components/LoadingBlock';
@@ -89,7 +89,8 @@ const MembersMain = ({ path, groupId }) => {
         mem.isCurrent && mem.userRole !== 'guest' && mem.status !== 'invite'
     ));
     const groupSizeBelowMax = (group.data) && (group.data.memberCount < group.data.maxMembers);
-    return <>{members.isLoading && <LoadingBlock />}
+    return <>
+        {members.isLoading && <LoadingBlock />}
         {members.isSuccess && <Container maxWidth='lg'>
             {(userMayInvite) && <Box sx={barStyle}>
                 <Button
@@ -131,20 +132,21 @@ const MembersMain = ({ path, groupId }) => {
 
 export default function MemberPage({ path, groupId }) {
     return (
-        <Protected>
+        <>
             <GroupHeader path={path} groupId={groupId} />
             <MembersMain path={path} groupId={groupId} />
-        </Protected>
+        </>
     )
 }
 
 export async function getServerSideProps(context) {
-    const user = await getSSRUser(context);
     const routeData = getSSRRoute(context)
-    return {
-        props: {
-            user,
-            ...routeData
+    const isAuthenticated = await isAuthUser(context)
+    return (isAuthenticated) ?
+        {
+            props: {
+                ...routeData
+            }
         }
-    }
+        : { redirect: { destination: '/login' } }
 }

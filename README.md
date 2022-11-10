@@ -12,10 +12,9 @@ General
 
 ## How AUTH works
 ### User state management
-Currently in `Context`
-- `UserContext` in Components, and a usercontext provider at _app level
-- LoginForm calls Login function
-- Logout function in UserMenu calls logout
+With react query
+- `user.js` (in `data` folder) exposes a queryFn for auth and for user data
+    - the `authQueryFn` calls `Auth.currentAuthenticatedUser()`
 
 Amplify `Auth` is called in
 - `UserContext`: `.currentAuthenticatedUser()`
@@ -28,84 +27,37 @@ Amplify `Auth` is called in
     - `.SignIn()`
     - `.forgotPassword()`
     - `.forgotPasswordSubmit()` - email, code, new psw
-- `NavBar-UserMenu`: `.signOut()`
+- `NavBar-UserMenu`: `.signOut()` - also invalidates auth query and removes user query
 
-How this works on load:
-- on load, a page *may* receive a `user` prop from the server
-    - a page may include the `Protected` wrapper
-    - if so, it should also include the SSR function for user
-    - which at server side checks (from the context) if the user is logged in
-    - and if so, sends the Auth user as a prop to the page
-- the page prop user contains *only* the Auth info about the user - so not user profile with e.g. photourl
-- the page prop is passed as `ssrUser` to the `UserContext`
-- `UserContext` is a context provider that stores user info
-
-This setup with `Context` does not use react-query. So it is OK that the usercontext is rendered outside the QueryContext in `_app`.
-
-Using react-query for user state is not ideal: the fact that the initialstate is provided in props means that we need either a) pass the ssrUser from props down to every component that calls `useUser()` or b) set up complicated stuff with hydration and dehyrdation. For more info, see [here](https://tanstack.com/query/v4/docs/guides/ssr).
-
-What if we do use React Query
-- [ ] a useQuery at top that simply gets currentAuthUser
-    - [ ] remove passing user props to the page from server side
-    - [ ] instead, on protected pages, redirect to login (with destination) if user is not authenticated
-    - [ ] remove the client side check - BUT TEST!
-- [ ] make a dependent query that fetches the user profile
-- [ ] pass the user to all children who need it
-
-CON: re-render of entire page if user logs in/ out or changes profile - but this is likely not often
-PRO: get user data once per page, only 1 render
-
-Why only get user details at top level?
-- second instances of the same query (same key + same function) will trigger *refetch of both instances*, 
-    - see [here in react query docs](https://tanstack.com/query/v4/docs/guides/caching)
-- Which is not what we want. 
-    - Will cause rerender of *all* user instances across app on every new mount of `useQuery(['user'])`
-    - because by default, staleTime = 0, so data on all instances will be considered stale
-- We could increase the staletime, but this is risky - some instance may be logged in, others logged out
-
-V3.0 "Auth on server, client should make requests" - as per T3 Theo ping.gg
-- [ ] rework user Context
-    - [ ] create fetchUser - for useQuery to get user details
-    - [ ] remove context from _app
-- [ ] replace useUser with useQuery
-- [ ] redirect if not auth
-- [ ] remove passing user props on server side
+Specifically for invites, there is some additional setup:
+- The invite is retrieved from the client.
+    - Result from this request may be different for logged in/out users: An invite for an existing account is only shown to the user logged in on that account
+- If the user logs out on the invite page - using button in Nav-UserMenu
+    - on logout, if the route contains `/invites/`, then the invite query will be invalidated
 
 ### Protected pages
 Every protected page needs
 - `export ... getServerSideProps` to check server side if the user is authenticated, and to pass any user info to pageProps
-    - should also be included on public pages, because every page displays navbar with user menu
-- in the default export function:
-    - a call in `useEffect` to `redirectUnAuth(pathname)` to catch client side navigation to protected page too, and navigate to login page if needed
-- conditional rendering of the content
-    - a loading screen if user is not authenticated, needed to prevent the client version to render before the async client side auth check is done
+    - BTW: should also be included on public pages, because every page displays navbar with user menu
+- if the user is not logged in, server will redirect to login page
 
-All this is bundled in the `Protected.js` component
-
-The main _app contains a `UserContext` provider, that stores all user info.
-The Context provider also has a client side useEffect, which checks if a user is authenticated. If so, it retrieves user info from the DB. This is done on client side in a useEffect, so only once, to prevent unnecessary API calls to the DB: if it would be done in `getServerSideProps`, next would make a db call on every page visited, even if the user details are already known client-side.
-For the basic auth info, this is not needed, because the user details are passed to the server in the request context.
-
-#### Usage
-In the page file
-``` js
-    return (
-        <Protected>
-            // ...your page contents
-        </Protected>
-    )
-
-```
+This is bundled in the `Protected.js` component
 
 Example for Serverside props:
 ``` js
+import { isAuthUser } from '../src/Components/Protected';
+import { getSSRRoute } from '../src/utils/route-helper';
+
 export async function getServerSideProps(context) {
-    const user = await getSSRUser(context);
-    return {
-        props: {
-            user
+    const routeData = getSSRRoute(context)
+    const isAuthenticated = await isAuthUser(context)
+    return (isAuthenticated) ?
+        {
+            props: {
+                ...routeData
+            }
         }
-    }
+        : { redirect: { destination: '/login' } }
 }
 ```
 
@@ -165,8 +117,8 @@ For auth, pages are (all located in root)
 
 ### Invites
 - The invite route has an `inviteId`.
-    - used in getServerSideProps to fetch the invite from the server (this is a public API)
-- At creation, the invite is addressed to an email. The backend (in api-groups) handles as follows
+    - getServerSideProps passed inviteId to the page/ client
+- At creation of an invite, it is addressed to an email. The backend (in api-groups) handles as follows
     - checks if the invitor is a member of the group + has admin priviliges - otherwise throws error
     - checks if the group size (env var) would not be exceeded - otherwise, throws error
     - checks if the invitee email is already a user, and if so
@@ -194,30 +146,6 @@ For auth, pages are (all located in root)
     - if user is not logged in
         - redirect to signup page, with inviteId in query
 
-- [x] create an invite via live dev site
-- [x] get the inviteId from the email
-- [x] store the inviteId in cypress env vars
-- [x] visit the /invite/[inviteId] page
-- [x] display the invite info
-    - [x] show group name and description, invitor name, message, valid date
-    - [x] show group picture on left side
-- [x] reload on logout
-- [x] show and test error situations
-    - [x] `"invite ID invalid"` or `"invite not found"`
-    - [x] `"invite not for you"`
-        - [x] if user is logged in: invite is for another user -> do not allow acceptance
-        - [x] if user is not logged in: invite is for an existing user -> prompt to log in
-    - [x] `"invite already accepted"`: invite is already accepted  -> show message
-    - [x] `"invite expired"`: invite expired -> show message
-- [x] implement acceptance
-    - [x] if user is logged in
-    - [x] if user is not logged in
-- [x] implement decline
-- [x] tests for accept and decline
-    - finish test scripts after
-        - sending invitations is possible
-        - leaving a group is possible
-
 ### How nav works
 Every page needs a `getServerSideProps`, 
 - to retrieve the route from the request, and populate props with `path`, and - if relevant - `groupId`, `albumId`,  `backRoute`
@@ -227,11 +155,9 @@ Every page needs a `getServerSideProps`,
 `route-helpers` exposes a `getSSRRoute()` function, that can be called as follows
 ``` js
 export async function getServerSideProps(context) {
-    const user = await getSSRUser(context);
     const routeData = getSSRRoute(context)
     return {
         props: {
-            user,
             ...routeData
         }
     }
@@ -246,7 +172,7 @@ In links to protected pages,
 - or you can use the custom `ProtectedLink` component to make it more explicit
 
 This will add a check if user is logged in.
-If not, the link will not work and a toast will be shown.
+If not, the link will not work and a toast will be shown instead.
 
 ### Redirects
 Whenever a redirect takes place - e.g. someone not logged in visits a private page - they will be redirected to the login page, and a message appears (as a toast).

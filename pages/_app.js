@@ -11,7 +11,6 @@ import createEmotionCache from '../src/createEmotionCache';
 import NavBar from '../src/Components/NavBar/NavBar';
 import Copyright from '../src/Copyright';
 import Toolbar from '@mui/material/Toolbar';
-import { UserProvider } from '../src/Components/UserContext';
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { useRouter } from 'next/router';
@@ -35,7 +34,7 @@ export default function MyApp(props) {
     React.useEffect(() => {
         // display toast if it was passed in the query parameters
         if (router.isReady && router.query.toast) {
-            toast.info(router.query.toast, { toastId: 'id to prevent duplicate'})
+            toast.info(router.query.toast, { toastId: 'id to prevent duplicate' })
         }
     }, [router.isReady, router.pathname, router.query.toast])
     return (
@@ -46,15 +45,13 @@ export default function MyApp(props) {
             </Head>
             <ThemeProvider theme={theme}>
                 <CssBaseline />
-                <UserProvider ssrUser={pageProps.user}>
-                    <QueryClientProvider client={queryClient}>
-                        <NavBar {...pageProps}/>
-                        <Toolbar />
-                        <Component {...pageProps} />
-                        <Copyright />
-                    </QueryClientProvider>
-                    <ToastContainer position='top-center' />
-                </UserProvider>
+                <QueryClientProvider client={queryClient}>
+                    <NavBar {...pageProps} />
+                    <Toolbar />
+                    <Component {...pageProps} />
+                    <Copyright />
+                </QueryClientProvider>
+                <ToastContainer position='top-center' />
             </ThemeProvider>
         </CacheProvider>
     );

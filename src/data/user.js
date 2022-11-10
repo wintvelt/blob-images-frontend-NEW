@@ -1,28 +1,15 @@
-function createStore(initialState) {
-    let currentState = initialState;
-    const listeners = new Set();
-    let isInitialized = false;
-    return {
-        getState: () => currentState,
-        setState: (newState) => {
-            currentState = newState;
-            listeners.forEach((listener) => listener(currentState));
-        },
-        subscribe: (listener) => {
-            listeners.add(listener);
-            return () => listeners.delete(listener);
-        },
-        serverInitialize: (initialState) => {
-            if (!isInitialized) {
-                currentState = initialState;
-                isInitialized = true;
-            }
-        },
-    };
+import { API, Auth } from 'aws-amplify';
+
+export default async function userQueryFn(_queryCtx) {
+    const userData = await API.get('blob-images', `/user`);
+    return userData
 }
 
-const store = createStore({
-    isAuthenticated: false
-});
-
-export default store;
+export const authQueryFn = async () => {
+    try {
+        await Auth.currentAuthenticatedUser();
+        return true;
+    } catch (_error) {
+        return false;
+    }
+}

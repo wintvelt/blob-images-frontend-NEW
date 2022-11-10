@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Sort from '@mui/icons-material/Sort';
 import Add from '@mui/icons-material/Add';
-import { getSSRUser, Protected } from '../../src/Components/Protected';
+import { isAuthUser } from '../../src/Components/Protected';
 import { getSSRRoute } from '../../src/utils/route-helper';
 import PersonalHeader from '../../src/Components/PersonalHeader';
 import GroupCard from '../../src/Components/GroupCard';
@@ -37,7 +37,7 @@ function MyGroupsPage({ path }) {
     const handleClickNew = () => alert('clicked')
 
     return (
-        <Protected>
+        <>
             <PersonalHeader path={path} />
             {groups.isLoading && <LoadingBlock />}
             {groups.isSuccess && <Container maxWidth='lg'>
@@ -78,7 +78,7 @@ function MyGroupsPage({ path }) {
                 </Grid>
                 <pre>{JSON.stringify(groups.data, null, 2)}</pre>
             </Container>}
-        </Protected>
+        </>
     )
 }
 
@@ -87,12 +87,13 @@ MyGroupsPage.whyDidYouRender = true
 export default MyGroupsPage
 
 export async function getServerSideProps(context) {
-    const user = await getSSRUser(context);
     const routeData = getSSRRoute(context)
-    return {
-        props: {
-            user,
-            ...routeData
+    const isAuthenticated = await isAuthUser(context)
+    return (isAuthenticated) ?
+        {
+            props: {
+                ...routeData
+            }
         }
-    }
+        : { redirect: { destination: '/login' } }
 }

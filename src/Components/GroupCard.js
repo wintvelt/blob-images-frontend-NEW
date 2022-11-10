@@ -13,7 +13,7 @@ const GroupCard = ({
   memberCount,
   albumCount
 }) => {
-  const src = makeImageUrl(photoUrl, 240, 240);
+  const src = makeImageUrl(photoUrl, 900);
   const groupLink = `/groups/${groupId}`
   return <Badge className={styles.badge} badgeContent={newPicsCount} color='secondary'>
     <Link noLinkStyle className={styles.figure} href={groupLink}>
@@ -25,7 +25,7 @@ const GroupCard = ({
           </Typography>
           <Typography variant='caption'>
             Sinds {since.slice(0, 4)}
-            {(memberCount) &&  ` · ${memberCount} ${(memberCount === 1)? 'lid' : 'leden'}`}
+            {(memberCount) && ` · ${memberCount} ${(memberCount === 1) ? 'lid' : 'leden'}`}
             {(albumCount) && ` · ${albumCount} album${(album !== 1) && "s"}`}
           </Typography>
         </figcaption>

@@ -4,14 +4,14 @@ import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
 import ProTip from '../../../src/ProTip';
 import Link from '../../../src/Components/Link';
-import { getSSRUser, Protected } from '../../../src/Components/Protected';
+import { isAuthUser } from '../../../src/Components/Protected';
 import { getSSRRoute } from '../../../src/utils/route-helper';
 
 const boxMargin = { backgroundColor: '#00ccee' }
 
 export default function GroupPage() {
     return (
-        <Protected>
+        <>
             <Container maxWidth="sm" sx={boxMargin}>
                 <Box sx={{ my: 4 }}>
                     <Typography variant="h4" component="h1" gutterBottom>
@@ -23,17 +23,18 @@ export default function GroupPage() {
                     <ProTip />
                 </Box>
             </Container>
-        </Protected>
+        </>
     )
 }
 
 export async function getServerSideProps(context) {
-    const user = await getSSRUser(context);
     const routeData = getSSRRoute(context)
-    return {
-        props: {
-            user,
-            ...routeData
+    const isAuthenticated = await isAuthUser(context)
+    return (isAuthenticated) ?
+        {
+            props: {
+                ...routeData
+            }
         }
-    }
+        : { redirect: { destination: '/login' } }
 }

@@ -5,9 +5,10 @@ import { useRouter } from 'next/router';
 import NextLink from 'next/link';
 import MuiLink from '@mui/material/Link';
 import { styled } from '@mui/material/styles';
-import { useUser } from './UserContext';
 import { toast } from 'react-toastify';
 import { isProtectedRoute } from '../utils/route-helper';
+import { authQueryFn } from '../data/user';
+import { useQuery } from '@tanstack/react-query';
 
 // Add support for the sx prop for consistency with the other branches.
 const Anchor = styled('a')({});
@@ -64,11 +65,11 @@ const Link = React.forwardRef(function Link(props, ref) {
     } = props;
 
     const router = useRouter();
-    const { user } = useUser()
+    const authData = useQuery(['auth'], authQueryFn);
 
     const onProtectedClick = async (e) => {
         if (!isProtected && !isProtectedRoute(href)) return
-        if (!user.isAuthenticated) {
+        if (!authData.data) {
             toast.error('Log eerst even in', { toastId: 'login-required' })
             e.preventDefault()
         }

@@ -6,13 +6,14 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { useForm } from "react-hook-form";
 import EmailField from './EmailField';
-import { makeUser, useUser } from '../UserContext';
 import PasswordField from './PasswordField';
-import { API, Auth } from 'aws-amplify';
+import { Auth } from 'aws-amplify';
 import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import { useRouter } from 'next/router';
 import { toast } from 'react-toastify';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import userQueryFn, { authQueryFn } from '../../data/user';
 
 export default function LoginForm({ onCreateAccount }) {
     const { handleSubmit, control, setError, setFocus } = useForm({
@@ -21,7 +22,10 @@ export default function LoginForm({ onCreateAccount }) {
             password: ''
         }
     });
-    const { user, setUser } = useUser();
+    const authData = useQuery(['auth'], authQueryFn);
+    const isAuthenticated = !!authData.data;
+    const userData = useQuery(['user', isAuthenticated], userQueryFn, { enabled: isAuthenticated });
+    const queryClient = useQueryClient();
     const [isLoading, setIsLoading] = React.useState(false);
     const router = useRouter();
 
@@ -41,12 +45,16 @@ export default function LoginForm({ onCreateAccount }) {
                     tmpPassword: data.password
                 })
             } else {
-                const userData = await API.get('blob-images', `/user`);
-                const newUser = makeUser(authResult, userData);
-                setUser(newUser);
+                // invalidate all queries to reload user
+                queryClient.invalidateQueries();
                 setIsLoading(false);
                 // redirect after login
-                if (router.query.redirectTo) router.push(router.query.redirectTo)
+                const redirect = router.query.redirectTo;
+                if (redirect) {
+                    const msg = encodeURI("Welkom op deze pagina als ingelogd lid");
+                    const symb = (redirect.includes('?'))? '&' : '?';
+                    router.push(`${redirect}${symb}toast=${msg}`, redirect)
+                }
             }
         } catch (error) {
             switch (error.message) {
@@ -73,9 +81,9 @@ export default function LoginForm({ onCreateAccount }) {
                 👋
             </Avatar>
             <Typography component="h1" variant="h5">
-                {(user.isAuthenticated) ? `Hi ${user.name || 'lid'}!` : 'Welkom terug!'}
+                {(userData.isSuccess) ? `Hi ${userData.data?.name || 'lid'}!` : 'Welkom terug!'}
             </Typography>
-            {(!user.isAuthenticated) && <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
+            {(!authData.data) && <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)} sx={{ mt: 2 }}>
                 <EmailField control={control} />
                 <PasswordField control={control} />
                 <Button
@@ -102,9 +110,9 @@ export default function LoginForm({ onCreateAccount }) {
                     </Grid>
                 </Grid>
             </Box>}
-            {(user.isAuthenticated) && <>
+            {(authData.data) && <>
                 <Typography variant='body' sx={{ mx: '2rem', mt: '2rem' }}>
-                    Mooi {user.name}, je bent weer ingelogd.
+                    Mooi {userData.data?.name}, je bent weer ingelogd.
                     En top dat je hier weer bent vandaag.
                 </Typography>
                 <Typography variant='body' sx={{ mx: '2rem', my: '1rem' }}>

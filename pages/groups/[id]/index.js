@@ -5,14 +5,13 @@ import Button from '@mui/material/Button';
 import Box from '@mui/material/Box';
 import Sort from '@mui/icons-material/Sort';
 import Add from '@mui/icons-material/Add';
-import { getSSRUser, Protected } from '../../../src/Components/Protected';
 import { getSSRRoute } from '../../../src/utils/route-helper';
 import GroupHeader from '../../../src/Components/GroupHeader';
 import LoadingBlock from '../../../src/Components/LoadingBlock';
 import { API } from 'aws-amplify';
 import { useQuery } from '@tanstack/react-query';
 import AlbumCard from '../../../src/Components/AlbumCard';
-
+import { isAuthUser } from '../../../src/Components/Protected';
 
 const barStyle = {
     my: 4,
@@ -37,10 +36,10 @@ export default function GroupPage({ path, groupId }) {
     const handleClickSort = () => alert('clicked')
     const handleClickNew = () => alert('clicked')
 
-    const albumsData = (albums.data)? albums.data : null
+    const albumsData = (albums.data) ? albums.data : null
 
     return (
-        <Protected>
+        <>
             <GroupHeader path={path} groupId={groupId} />
             {albums.isLoading && <LoadingBlock />}
             {albums.isSuccess && <Container maxWidth='lg'>
@@ -81,17 +80,18 @@ export default function GroupPage({ path, groupId }) {
                 </Grid>
                 <pre>{JSON.stringify(albums.data, null, 2)}</pre>
             </Container>}
-        </Protected>
+        </>
     )
 }
 
 export async function getServerSideProps(context) {
-    const user = await getSSRUser(context);
     const routeData = getSSRRoute(context)
-    return {
-        props: {
-            user,
-            ...routeData
+    const isAuthenticated = await isAuthUser(context)
+    return (isAuthenticated) ?
+        {
+            props: {
+                ...routeData
+            }
         }
-    }
+        : { redirect: { destination: '/login' } }
 }

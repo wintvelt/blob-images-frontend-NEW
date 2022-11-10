@@ -1,9 +1,8 @@
 import * as React from 'react';
-import { getSSRUser } from '../../src/Components/Protected';
-import { withSSRContext } from 'aws-amplify';
+import { API } from 'aws-amplify';
+import { useQuery } from '@tanstack/react-query';
+import userQueryFn, { authQueryFn } from '../../src/data/user';
 import InviteWrapper from '../../src/Components/Forms/InviteWrapper';
-import { useUser } from '../../src/Components/UserContext';
-import { useRouter } from 'next/router';
 import { makeImageUrl } from '../../src/utils/image-helper';
 import ErrorBlock from '../../src/Components/InviteError';
 import InviteBlock from '../../src/Components/InviteBlock';
@@ -20,56 +19,63 @@ const parseGroupId = (inviteId) => {
     }
 }
 
+async function inviteQueryFn(queryCtx) {
+    const inviteId = queryCtx.queryKey[1]
+    const inviteData = await API.get('blob-images', `/invites/${inviteId}`)
+    return inviteData
+}
+
 export default function InvitePage(props) {
-    // need to get user client side, because page reload is required when user logs out
-    const { user } = useUser();
-    const router = useRouter(); // router needed for reload
     const groupId = parseGroupId(props.inviteId);
+    const authData = useQuery(['auth'], authQueryFn);
+    const isAuthenticated = !!authData.data;
+    const userData = useQuery(['user', isAuthenticated], userQueryFn, { enabled: isAuthenticated });
+    const inviteData = useQuery(['invite', props.inviteId], inviteQueryFn, {
+        enabled: !!props.inviteId,
+        retry: false
+    });
+    const invite = inviteData.data;
 
-    React.useEffect(() => {
-        if (props.user.isAuthenticated && !user.isAuthenticated) {
-            // user has logged out
-            router.reload();
-        };
-    }, [user.isAuthenticated])
-
-    const groupPhotoUrl = props.inviteResult?.group?.photo?.url
+    const groupPhotoUrl = invite?.group?.photo?.url
     const bgImage = (props.error) ?
         '/invite-error.jpg'
         : (groupPhotoUrl) ? makeImageUrl(groupPhotoUrl, 690) : '/invite-bg.jpg';
 
-    const showStuff = (user.isAuthenticated === props.user.isAuthenticated);
+    const isError = (inviteData.isError);
+    const isLoading = !isError &&
+        (authData.isLoading || (isAuthenticated && userData.isLoading) || inviteData.isLoading);
+    const error = inviteData.error?.response?.data?.error;
 
     return (
         <InviteWrapper background={bgImage}>
-            {showStuff && props.inviteResult &&
-                <InviteBlock invite={props.inviteResult} inviteId={props.inviteId} user={user} />}
-            {showStuff && props.error &&
-                <ErrorBlock error={props.error} groupId={groupId} user={user} />}
-            {!showStuff && <LoadingBlock />}
+            {inviteData.isSuccess &&
+                <InviteBlock invite={invite} inviteId={props.inviteId} user={userData.data} />}
+            {isError &&
+                <ErrorBlock error={error} groupId={groupId} user={userData.data} />}
+            {isLoading && <LoadingBlock />}
         </InviteWrapper>
     );
 }
 
-async function getSSRInvite(context) {
-    const { API } = withSSRContext(context);
-    const inviteId = context.params?.inviteId;
-    try {
-        const inviteResult = await API.get('blob-images', `/invites/${inviteId}`);
-        return { inviteResult, inviteId }
-    } catch (err) {
-        console.log(err.response.data)
-        return { ...err.response.data, inviteId }
-    }
-}
+// Note: Abandoned server-side fetching of invite, because it caused complicated Hydration errors
+
+// async function getSSRInvite(context) {
+//     const inviteId = context.params?.inviteId;
+//     try {
+//         const { API } = withSSRContext(context);
+//         const inviteResult = await API.get('blob-images', `/invites/${inviteId}`);
+//         return { inviteResult, inviteId }
+//     } catch (err) {
+//         console.log(err.response.data)
+//         return { ...err.response.data, inviteId }
+//     }
+// }
 
 export async function getServerSideProps(context) {
-    const user = await getSSRUser(context);
-    const inviteData = await getSSRInvite(context)
+    const inviteId = context.params?.inviteId;
     return {
         props: {
-            user,
-            ...inviteData
+            inviteId
         }
     }
 }

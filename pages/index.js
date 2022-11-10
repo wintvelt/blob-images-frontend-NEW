@@ -5,7 +5,6 @@ import Box from '@mui/material/Box';
 import ProTip from '../src/ProTip';
 import Link from '../src/Components/Link';
 import { getSSRRoute } from '../src/utils/route-helper';
-import { getSSRUser } from '../src/Components/Protected';
 
 export default function Index() {
     const boxStyle = { my: 4 };
@@ -27,11 +26,9 @@ export default function Index() {
 
 export async function getServerSideProps(context) {
     const routeData = getSSRRoute(context)
-    const user = await getSSRUser(context)
     return {
         props: {
-            ...routeData,
-            user
+            ...routeData
         }
     }
 }

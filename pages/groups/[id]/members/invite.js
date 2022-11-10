@@ -1,11 +1,5 @@
 import * as React from 'react';
-import Container from '@mui/material/Container';
-import Grid from '@mui/material/Grid';
-import Button from '@mui/material/Button';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import GroupAdd from '@mui/icons-material/GroupAdd';
-import { getSSRUser, Protected } from '../../../../src/Components/Protected';
+import { isAuthUser } from '../../../../src/Components/Protected';
 import { getSSRRoute } from '../../../../src/utils/route-helper';
 import { API } from 'aws-amplify';
 import { useQuery } from '@tanstack/react-query';
@@ -41,23 +35,22 @@ export default function MemberInvitePage({ groupId }) {
     const allowance = (group.data && (group.data.maxMembers - group.data.memberCount));
 
     return (
-        <Protected>
-            <InviteWrapper background={groupPhoto} narrow={true}>
-                <InviteForm groupName={group.data?.name} groupId={groupId}
-                    allowance={allowance}
-                    memberMails={memberMails} />
-            </InviteWrapper>
-        </Protected>
+        <InviteWrapper background={groupPhoto} narrow={true}>
+            <InviteForm groupName={group.data?.name} groupId={groupId}
+                allowance={allowance}
+                memberMails={memberMails} />
+        </InviteWrapper>
     )
 }
 
 export async function getServerSideProps(context) {
-    const user = await getSSRUser(context);
     const routeData = getSSRRoute(context)
-    return {
-        props: {
-            user,
-            ...routeData
+    const isAuthenticated = await isAuthUser(context)
+    return (isAuthenticated) ?
+        {
+            props: {
+                ...routeData
+            }
         }
-    }
+        : { redirect: { destination: '/login' } }
 }

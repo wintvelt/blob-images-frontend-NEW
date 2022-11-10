@@ -1,18 +1,20 @@
 import { Button } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
-import { useUser } from "../UserContext";
+import userQueryFn, { authQueryFn } from "../../data/user";
 import UserMenu from "./NavBar-UserMenu";
 
 export default function NavBarLogin(props) {
-    const { user } = useUser();
-    const { isAuthenticated } = user;
+    const authData = useQuery(['auth'], authQueryFn);
+    const isAuthenticated = !!authData.data;
+    const userData = useQuery(['user', isAuthenticated], userQueryFn, { enabled: isAuthenticated });
     const router = useRouter();
     const login = () => {
         router.push('/login')
     }
 
     if (isAuthenticated) {
-        return <UserMenu />
+        return <UserMenu user={userData.data} />
     }
 
     if (router.pathname.includes('login')) return <></>;

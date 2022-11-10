@@ -9,8 +9,9 @@ import IconButton from '@mui/material/IconButton';
 import Tab from '@mui/material/Tab';
 import Tabs from '@mui/material/Tabs';
 import EditIcon from '@mui/icons-material/Edit';
-import { useUser } from './UserContext';
 import { makeImageUrl } from '../utils/image-helper';
+import { useQuery } from '@tanstack/react-query';
+import userQueryFn from '../data/user';
 
 const bgImgStyle = {
     backgroundImage: "url(https://picsum.photos/2000/500)", /* The image used */
@@ -65,8 +66,16 @@ const LinkTab = ({ value, label, title, ...linkProps }) => (
     />
 )
 
+const placeholderUser = {
+    name: 'gast',
+    photoUrl: '',
+    photoCount: 0,
+    createdAt: 'someday'
+}
+
 function PersonalHeader({ path }) {
-    const { user } = useUser();
+    const userData = useQuery(['user', true], userQueryFn, { placeholderData: placeholderUser });
+    const user = userData.data || placeholderUser;
     const activeTab = (path === '/groups') ? 'groups'
         : (path === '/photos') ? 'photos'
             : (path === '/profile') ? 'profile'
